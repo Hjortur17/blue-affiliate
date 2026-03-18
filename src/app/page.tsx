@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatsGrid from "@/components/StatsGrid";
+import BookingTypesDistribution from "@/components/BookingTypesDistribution";
 
 export default function Home() {
   return (
@@ -22,7 +23,13 @@ export default function Home() {
 }
 
 const BookingData = () => {
-  return <StatsGrid />;
+  return (
+    <div className="space-y-6">
+      <StatsGrid />
+
+      <BookingTypesDistribution />
+    </div>
+  );
 };
 
 const DeliveryData = () => {
