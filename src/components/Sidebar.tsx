@@ -1,9 +1,4 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "./ui/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 
 import { IconComponent, Icon } from "./Icon";
 
@@ -73,10 +68,7 @@ export default function Sidebar({ className }: { className?: string }) {
                       "hover:bg-light-gray/50 group flex gap-x-3.5 py-3 px-11 font-medium rounded-r-xl relative",
                     )}
                   >
-                    <IconComponent
-                      icon={item.icon}
-                      className="shrink-0 size-7"
-                    />
+                    <IconComponent icon={item.icon} className="shrink-0 size-7" />
                     {item.name}
                   </a>
                 </li>
@@ -92,12 +84,8 @@ export default function Sidebar({ className }: { className?: string }) {
         <Accordion defaultValue={[accordion[0].title]}>
           {accordion.map((item) => (
             <AccordionItem key={item.title} value={item.title}>
-              <AccordionTrigger className="text-base font-medium py-4">
-                {item.title}
-              </AccordionTrigger>
-              <AccordionContent className="text-xs">
-                {item.content}
-              </AccordionContent>
+              <AccordionTrigger className="text-base font-medium py-4">{item.title}</AccordionTrigger>
+              <AccordionContent className="text-xs">{item.content}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>

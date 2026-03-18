@@ -4,7 +4,7 @@ import StatsGrid from "@/components/StatsGrid";
 export default function Home() {
   return (
     <section>
-      <Tabs defaultValue="booking-data" className="w-full max-w-max">
+      <Tabs defaultValue="booking-data" className="w-full">
         <TabsList className="mb-8">
           <TabsTrigger value="booking-data">Booking Data</TabsTrigger>
           <TabsTrigger value="delivery-data">Delivery Data</TabsTrigger>

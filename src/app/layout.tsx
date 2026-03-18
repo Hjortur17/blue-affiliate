@@ -12,8 +12,7 @@ const hostGrotesk = Host_Grotesk({
 
 export const metadata: Metadata = {
   title: "Blue Affiliate",
-  description:
-    "Blue Affiliate is a platform for creating and managing affiliate programs.",
+  description: "Blue Affiliate is a platform for creating and managing affiliate programs.",
 };
 
 export default function RootLayout({
@@ -22,17 +21,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={cn("bg-background", "font-sans", hostGrotesk.variable)}
-    >
+    <html lang="en" className={cn("bg-background", "font-sans", hostGrotesk.variable)}>
       <body className="antialiased p-8">
         <Navbar />
 
-        <div className="mt-10 grid grid-cols-12 gap-14">
-          <Sidebar className="col-span-4" />
+        <div className="mt-10 flex gap-x-14">
+          <Sidebar className="w-full max-w-88" />
 
-          <main className="col-span-8">{children}</main>
+          <main className="flex-1">{children}</main>
         </div>
       </body>
     </html>

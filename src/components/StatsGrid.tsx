@@ -1,8 +1,10 @@
+import { cn } from "@/lib/utils";
+
 type StatCard = {
   label: string;
   value: string;
   subtext: string;
-  subtextColor?: "green" | "muted";
+  subtextColor?: "green" | "red" | "muted";
 };
 
 const stats: StatCard[] = [
@@ -33,20 +35,15 @@ export default function StatsGrid() {
   return (
     <div className="grid grid-cols-4 gap-6">
       {stats.map((stat) => (
-        <div
-          key={stat.label}
-          className="bg-white border border-border rounded-lg px-6 pt-6 pb-px flex flex-col gap-2"
-        >
-          <p className="text-sm leading-5 text-muted-foreground">
-            {stat.label}
-          </p>
-          <p className="text-base leading-6 text-foreground">
-            {stat.value}
-          </p>
+        <div key={stat.label} className="bg-white border border-border rounded-lg p-6 flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">{stat.label}</p>
+          <p className="text-base text-foreground">{stat.value}</p>
           <p
-            className={`text-sm leading-5 ${
-              stat.subtextColor === "green" ? "text-green-600" : "text-muted-foreground"
-            }`}
+            className={cn("text-sm", {
+              "text-green-600": stat.subtextColor === "green",
+              "text-red-600": stat.subtextColor === "red",
+              "text-muted-foreground/70": stat.subtextColor !== "green" && stat.subtextColor !== "red",
+            })}
           >
             {stat.subtext}
           </p>
