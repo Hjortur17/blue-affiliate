@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import { Host_Grotesk, Inter } from "next/font/google";
+import { Host_Grotesk } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 import { cn } from "@/lib/utils";
-
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
 const hostGrotesk = Host_Grotesk({
   variable: "--font-host-grotesk",
@@ -24,8 +22,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("bg-background", "font-sans", inter.variable)}>
-      <body className={`${hostGrotesk.className} antialiased p-8`}>
+    <html
+      lang="en"
+      className={cn("bg-background", "font-sans", hostGrotesk.variable)}
+    >
+      <body className="antialiased p-8">
         <Navbar />
 
         <div className="mt-10 grid grid-cols-12 gap-14">
