@@ -1,0 +1,10 @@
+Before adding any styles, check `src/app/globals.css` and use existing CSS variables via Tailwind classes instead of hardcoded values.
+
+Available variables (use as Tailwind classes):
+- Colors: `bg-background`, `bg-foreground`, `bg-card`, `bg-card-foreground`, `bg-primary`, `bg-secondary`, `bg-muted`, `bg-accent`, `bg-border`, `bg-input`, `bg-ring`, `bg-destructive`
+- Text: `text-foreground`, `text-card-foreground`, `text-muted-foreground`, `text-primary`, `text-secondary`, `text-accent-foreground`
+- Border: `border-border`, `border-input`
+- Custom theme: `bg-light-gray`, `text-primary` (#155dfc), `text-secondary` (#ff6900)
+- Radius: `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-2xl`, `rounded-3xl`, `rounded-4xl`
+
+Never use arbitrary color values like `bg-[#ffffff]` or `text-[#4a5565]` when a semantic variable exists.

@@ -1,7 +1,30 @@
-import Image from "next/image";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import StatsGrid from "@/components/StatsGrid";
 
 export default function Home() {
   return (
-    <h1>Hello</h1>
+    <section>
+      <Tabs defaultValue="booking-data" className="w-full max-w-max">
+        <TabsList className="mb-8">
+          <TabsTrigger value="booking-data">Booking Data</TabsTrigger>
+          <TabsTrigger value="delivery-data">Delivery Data</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="booking-data">
+          <BookingData />
+        </TabsContent>
+        <TabsContent value="delivery-data">
+          <DeliveryData />
+        </TabsContent>
+      </Tabs>
+    </section>
   );
 }
+
+const BookingData = () => {
+  return <StatsGrid />;
+};
+
+const DeliveryData = () => {
+  return <p>Delivery Data</p>;
+};

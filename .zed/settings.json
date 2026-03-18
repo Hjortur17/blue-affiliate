@@ -1,0 +1,37 @@
+{
+  "tab_size": 2,
+  "hard_tabs": false,
+  "format_on_save": "on",
+  "formatter": {
+    "external": {
+      "command": "biome",
+      "arguments": ["format", "--write", "--stdin-file-path", "{buffer_path}"]
+    }
+  },
+  "languages": {
+    "TypeScript": {
+      "formatter": {
+        "external": {
+          "command": "biome",
+          "arguments": ["format", "--write", "--stdin-file-path", "{buffer_path}"]
+        }
+      }
+    },
+    "JavaScript": {
+      "formatter": {
+        "external": {
+          "command": "biome",
+          "arguments": ["format", "--write", "--stdin-file-path", "{buffer_path}"]
+        }
+      }
+    },
+    "TSX": {
+      "formatter": {
+        "external": {
+          "command": "biome",
+          "arguments": ["format", "--write", "--stdin-file-path", "{buffer_path}"]
+        }
+      }
+    }
+  }
+}

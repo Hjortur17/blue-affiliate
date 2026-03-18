@@ -30,9 +30,9 @@ export default function RootLayout({
         <Navbar />
 
         <div className="mt-10 grid grid-cols-12 gap-14">
-          <Sidebar />
+          <Sidebar className="col-span-4" />
 
-          <main>{children}</main>
+          <main className="col-span-8">{children}</main>
         </div>
       </body>
     </html>

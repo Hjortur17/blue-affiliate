@@ -56,9 +56,9 @@ const accordion = [
   },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ className }: { className?: string }) {
   return (
-    <aside className="col-span-4 space-y-2.5">
+    <aside className={cn("space-y-2.5", className)}>
       <div className="border border-light-gray rounded-2xl p-8">
         <nav className="flex flex-1 flex-col">
           <ul role="list" className="-mx-2 space-y-1">
