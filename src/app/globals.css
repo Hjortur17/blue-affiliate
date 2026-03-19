@@ -58,11 +58,11 @@ body {
 
 :root {
   --background: #f8f8f8;
-  --foreground: oklch(0.145 0 0);
+  --foreground: #121212;
   --card: oklch(1 0 0);
   --card-foreground: #101828;
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  --popover-foreground: #121212;
   --primary: #155dfc;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: #fd6112;
@@ -82,7 +82,7 @@ body {
   --chart-5: oklch(0.424 0.199 265.638);
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-foreground: #121212;
   --sidebar-primary: oklch(0.205 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0 0);
@@ -92,7 +92,7 @@ body {
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  --background: #121212;
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);

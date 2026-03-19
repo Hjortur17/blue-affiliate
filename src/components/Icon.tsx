@@ -35,12 +35,7 @@ export const Icon = {
     </svg>
   ),
   ChevronDown: (props: IconProps) => (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={iconClassnames(props)}
-    >
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={iconClassnames(props)}>
       <path d="M5 9L11.5 15L18 9" stroke="white" strokeWidth="2.2" />
     </svg>
   ),
@@ -60,12 +55,7 @@ export const Icon = {
     </svg>
   ),
   Car: (props: IconProps) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 27 27"
-      fill="none"
-      className={iconClassnames(props)}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 27" fill="none" className={iconClassnames(props)}>
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -75,12 +65,7 @@ export const Icon = {
     </svg>
   ),
   Graph: (props: IconProps) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 20 20"
-      fill="none"
-      className={iconClassnames(props)}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" className={iconClassnames(props)}>
       <path
         d="M2.5 2.5V15.8333C2.5 16.2754 2.67559 16.6993 2.98816 17.0118C3.30072 17.3244 3.72464 17.5 4.16667 17.5H17.5"
         stroke="currentColor"
@@ -112,12 +97,7 @@ export const Icon = {
     </svg>
   ),
   LongArrowRight: (props: IconProps) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 27 27"
-      fill="none"
-      className={iconClassnames(props)}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 27" fill="none" className={iconClassnames(props)}>
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -127,12 +107,7 @@ export const Icon = {
     </svg>
   ),
   GraduationCap: (props: IconProps) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 28 28"
-      fill="none"
-      className={iconClassnames(props)}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" fill="none" className={iconClassnames(props)}>
       <path
         d="M24.99 12.7423C25.1989 12.6502 25.3761 12.4988 25.4998 12.3069C25.6234 12.115 25.6881 11.8911 25.6857 11.6628C25.6834 11.4346 25.6141 11.212 25.4865 11.0227C25.3589 10.8335 25.1786 10.6858 24.9678 10.598L14.9683 6.0433C14.6644 5.90464 14.3341 5.83289 14 5.83289C13.6659 5.83289 13.3357 5.90464 13.0317 6.0433L3.03334 10.5933C2.82564 10.6843 2.64894 10.8338 2.52487 11.0236C2.40079 11.2134 2.33472 11.4352 2.33472 11.662C2.33472 11.8887 2.40079 12.1106 2.52487 12.3004C2.64894 12.4901 2.82564 12.6397 3.03334 12.7306L13.0317 17.29C13.3357 17.4286 13.6659 17.5004 14 17.5004C14.3341 17.5004 14.6644 17.4286 14.9683 17.29L24.99 12.7423Z"
         stroke="currentColor"
@@ -157,12 +132,7 @@ export const Icon = {
     </svg>
   ),
   Information: (props: IconProps) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 27 27"
-      fill="none"
-      className={iconClassnames(props)}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 27" fill="none" className={iconClassnames(props)}>
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -174,17 +144,32 @@ export const Icon = {
     </svg>
   ),
   LogOut: (props: IconProps) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      className={iconClassnames(props)}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className={iconClassnames(props)}>
       <path
         d="M15.6709 16.2119L18.0215 13.8623L17.5176 13.3574L9.5 13.3574L9.5 11.0244L17.501 11.0244L18.0234 10.502L15.6709 8.14844L17.3193 6.5L23 12.1807C23 12.1807 21.6702 13.5109 21.1846 13.9941L21.1875 13.9941L17.3193 17.8613L15.6709 16.2119Z"
         fill="currentColor"
       />
       <path d="M12 6.8V4H2V20H12V17.6" stroke="currentColor" strokeWidth="2" />
+    </svg>
+  ),
+  Calendar: (props: IconProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" className={iconClassnames(props)}>
+      <path
+        d="M14.1101 16.5781H6.11029C4.03689 16.5781 2.35156 15.1577 2.35156 13.4134V4.04443H4.01472V13.4134C4.01472 14.296 4.95717 15.0114 6.11029 15.0114H14.1101C15.2687 15.0114 16.2056 14.296 16.2056 13.4134V4.04443H17.8688V13.4134C17.8688 15.1577 16.1835 16.5781 14.1101 16.5781Z"
+        fill="currentColor"
+      />
+      <path d="M6.78108 11.8937H5.11792V13.4291H6.78108V11.8937Z" fill="currentColor" />
+      <path d="M9.55305 11.8937H7.88989V13.4291H9.55305V11.8937Z" fill="currentColor" />
+      <path d="M12.3249 11.8937H10.6617V13.4291H12.3249V11.8937Z" fill="currentColor" />
+      <path d="M15.0969 11.8937H13.4337V13.4291H15.0969V11.8937Z" fill="currentColor" />
+      <path
+        d="M12.8405 7.17791H7.37427C6.13244 7.17791 5.11792 6.23265 5.11792 5.06806V3H6.78108V5.06806C6.78108 5.36573 7.04718 5.61119 7.37427 5.61119H12.8405C13.1676 5.61119 13.4337 5.36573 13.4337 5.06806V3H15.0969V5.06806C15.0969 6.23265 14.0823 7.17791 12.8405 7.17791Z"
+        fill="currentColor"
+      />
+      <path d="M6.78108 9.28259H5.11792V10.818H6.78108V9.28259Z" fill="currentColor" />
+      <path d="M9.55305 9.28259H7.88989V10.818H9.55305V9.28259Z" fill="currentColor" />
+      <path d="M12.3249 9.28259H10.6617V10.818H12.3249V9.28259Z" fill="currentColor" />
+      <path d="M15.0969 9.28259H13.4337V10.818H15.0969V9.28259Z" fill="currentColor" />
     </svg>
   ),
 };
