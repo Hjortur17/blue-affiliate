@@ -35,9 +35,9 @@ export default function StatsGrid() {
   return (
     <div className="grid grid-cols-4 gap-6">
       {stats.map((stat) => (
-        <div key={stat.label} className="bg-white border border-border rounded-lg p-6 flex flex-col gap-2">
+        <div key={stat.label} className="bg-white border rounded-lg p-6 flex flex-col gap-2">
           <p className="text-sm text-muted-foreground">{stat.label}</p>
-          <p className="text-base text-foreground">{stat.value}</p>
+          <p>{stat.value}</p>
           <p
             className={cn("text-sm", {
               "text-green-600": stat.subtextColor === "green",
