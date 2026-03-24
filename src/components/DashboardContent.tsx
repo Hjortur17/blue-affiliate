@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatsGrid from "@/components/StatsGrid";
 import BookingTypesDistribution from "@/components/BookingTypesDistribution";
+import TopCars from "@/components/TopCars";
+import NoteBanner from "@/components/NoteBanner";
 import PeriodFilter from "@/components/PeriodFilter";
 
 function getDefaultPeriod(): string {
@@ -33,6 +35,8 @@ export default function DashboardContent() {
         <div className="space-y-6">
           <StatsGrid />
           <BookingTypesDistribution />
+          <TopCars />
+          <NoteBanner />
         </div>
       </TabsContent>
       <TabsContent value="delivery-data">
