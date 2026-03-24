@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import BookingTypesDistribution from "@/components/BookingTypesDistribution";
-import NoteBanner from "@/components/NoteBanner";
+import Banner from "@/components/Banner";
 import PeriodFilter from "@/components/PeriodFilter";
 import StatsGrid from "@/components/StatsGrid";
 import TopCars from "@/components/TopCars";
@@ -36,7 +36,7 @@ export default function DashboardContent() {
           <StatsGrid />
           <BookingTypesDistribution />
           <TopCars />
-          <NoteBanner />
+          <Banner level="info" message="Number of bookings and revenue may change due to cancellations." />
         </div>
       </TabsContent>
       <TabsContent value="delivery-data">

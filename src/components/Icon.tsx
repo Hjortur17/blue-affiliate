@@ -143,6 +143,30 @@ export const Icon = {
       <path d="M13 7L13 9" stroke="currentColor" strokeWidth="2" />
     </svg>
   ),
+  Warning: (props: IconProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 27" fill="none" className={iconClassnames(props)}>
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M12.9893 2.65625C18.7891 2.65625 22.9999 6.86281 23 12.6562C23 18.4498 18.7786 22.6562 12.9893 22.6562C7.20001 22.6561 3 18.4497 3 12.6562C3.00012 6.86289 7.2001 2.65636 12.9893 2.65625ZM12.9893 4.79883C8.3689 4.79894 5.14269 8.02959 5.14258 12.6562C5.14258 17.283 8.36882 20.5145 12.9893 20.5146C17.6224 20.5146 20.8574 17.2831 20.8574 12.6562C20.8573 8.02951 17.6097 4.79883 12.9893 4.79883Z"
+        fill="currentColor"
+      />
+      <path d="M13 11L13 17" stroke="currentColor" strokeWidth="2" />
+      <path d="M13 7L13 9" stroke="currentColor" strokeWidth="2" />
+    </svg>
+  ),
+  Error: (props: IconProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 27" fill="none" className={iconClassnames(props)}>
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M12.9893 2.65625C18.7891 2.65625 22.9999 6.86281 23 12.6562C23 18.4498 18.7786 22.6562 12.9893 22.6562C7.20001 22.6561 3 18.4497 3 12.6562C3.00012 6.86289 7.2001 2.65636 12.9893 2.65625ZM12.9893 4.79883C8.3689 4.79894 5.14269 8.02959 5.14258 12.6562C5.14258 17.283 8.36882 20.5145 12.9893 20.5146C17.6224 20.5146 20.8574 17.2831 20.8574 12.6562C20.8573 8.02951 17.6097 4.79883 12.9893 4.79883Z"
+        fill="currentColor"
+      />
+      <path d="M13 11L13 17" stroke="currentColor" strokeWidth="2" />
+      <path d="M13 7L13 9" stroke="currentColor" strokeWidth="2" />
+    </svg>
+  ),
   LogOut: (props: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className={iconClassnames(props)}>
       <path
