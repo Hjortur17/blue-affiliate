@@ -5,8 +5,32 @@ import BookingTypesDistribution from "@/components/BookingTypesDistribution";
 import Banner from "@/components/Banner";
 import PeriodFilter from "@/components/PeriodFilter";
 import StatsGrid from "@/components/StatsGrid";
-import TopCars from "@/components/TopCars";
+import Table, { type Column } from "@/components/Table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+type TopCar = { model: string; bookings: number };
+
+const topCarsData: TopCar[] = [
+  { model: "Toyota Corolla", bookings: 142 },
+  { model: "Honda Civic", bookings: 118 },
+  { model: "Ford Focus", bookings: 97 },
+  { model: "BMW 3 Series", bookings: 84 },
+  { model: "Audi A4", bookings: 76 },
+];
+
+const topCarsColumns: Column<TopCar>[] = [
+  {
+    id: "rank",
+    header: "Rank",
+    render: (_row, index) => (
+      <span className="inline-flex items-center justify-center size-8 rounded-full bg-[#ffedd4] text-secondary">
+        {index + 1}
+      </span>
+    ),
+  },
+  { id: "model", header: "Car Model", accessor: "model" },
+  { id: "bookings", header: "Bookings", accessor: "bookings", align: "right" },
+];
 
 function getDefaultPeriod(): string {
   const now = new Date();
@@ -35,7 +59,7 @@ export default function DashboardContent() {
         <div className="space-y-6">
           <StatsGrid />
           <BookingTypesDistribution />
-          <TopCars />
+          <Table title="Top 5 Cars" icon="Car" columns={topCarsColumns} data={topCarsData} />
           <Banner level="info" message="Number of bookings and revenue may change due to cancellations." />
         </div>
       </TabsContent>
