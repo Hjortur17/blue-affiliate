@@ -54,6 +54,8 @@
 
 body {
   font-family: var(--font-host-grotesk);
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
 }
 
 :root {
