@@ -18,7 +18,7 @@ export default function TopCars() {
 
       <table className="w-full">
         <thead>
-          <tr className="border-b border-light-gray">
+          <tr className="border-b border-light-gray text-left">
             <th className="font-bold px-4 py-3">Rank</th>
             <th className="font-bold px-4 py-3">Car Model</th>
             <th className="text-right font-bold px-4 py-3">Bookings</th>
