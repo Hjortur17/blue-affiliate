@@ -1,13 +1,67 @@
+# Blue Affiliate
+
+Affiliate dashboard for Blue Car Rental built with Next.js 16, React 19, Tailwind CSS 4, and shadcn/ui (base-vega style).
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router, RSC enabled)
+- **UI:** shadcn/ui (base-vega style) + Base UI React + Lucide icons
+- **Styling:** Tailwind CSS 4 with CSS variables for theming
+- **Font:** Host Grotesk (via `next/font/google`, variable `--font-host-grotesk`)
+- **Linting/Formatting:** Biome (`npm run lint` / `npm run format`)
+- **Language:** TypeScript (strict mode)
+
+## Project Structure
+
+```
+src/
+├── app/              # Next.js App Router (layout, pages, globals.css)
+├── components/       # App-level components (Sidebar, Navbar, StatsGrid, etc.)
+│   └── ui/           # shadcn/ui primitives (button, tabs, accordion, etc.)
+├── lib/              # Utilities (cn helper via clsx + tailwind-merge)
+└── hooks/            # Custom React hooks
+```
+
+Path alias: `@/*` maps to `./src/*`
+
+## Component Conventions
+
+- Use `cn()` from `@/lib/utils` for conditional class merging
+- Components in `src/components/` use PascalCase filenames
+- shadcn/ui primitives live in `src/components/ui/` (lowercase filenames)
+- Prefer existing shadcn/ui components before creating new ones
+- Icons use the custom `<IconComponent>` wrapper or Lucide directly
+
+## Tailwind Class Discipline
+
+- **Do NOT add Tailwind classes that match the browser/Tailwind default** — only add a class when it changes something.
+- `text-base` (16px) is the default font size; do not write it unless explicitly overriding a non-default size set by a parent or ancestor. The same applies to `font-normal`, `text-left`, `leading-normal`, `block` on block-level elements, `static` positioning, etc.
+- Before adding any utility class, ask: "Would removing this class change the rendered output?" If no, leave it out.
+
+## Design Tokens
+
 Before adding any styles, check `src/app/globals.css` and use existing CSS variables via Tailwind classes instead of hardcoded values.
 
 Available variables (use as Tailwind classes):
 - Colors: `bg-background`, `bg-foreground`, `bg-card`, `bg-card-foreground`, `bg-primary`, `bg-secondary`, `bg-muted`, `bg-accent`, `bg-border`, `bg-input`, `bg-ring`, `bg-destructive`
 - Text: `text-foreground`, `text-card-foreground`, `text-muted-foreground`, `text-primary`, `text-secondary`, `text-accent-foreground`
-- Border: `border-border`, `border-input`
-- Custom theme: `bg-light-gray`, `text-primary` (#155dfc), `text-secondary` (#ff6900)
+- Border: `border-border`, `border-input`, `border-light-gray`
+- Custom theme: `bg-light-gray`, `text-primary` (#155dfc), `text-secondary` (#fd6112)
 - Radius: `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-2xl`, `rounded-3xl`, `rounded-4xl`
 
+| Token              | Light Value   | Usage                     |
+|--------------------|---------------|---------------------------|
+| `primary`          | `#155dfc`     | Brand blue, CTAs          |
+| `secondary`        | `#fd6112`     | Accent orange, highlights |
+| `light-gray`       | `#dcdcdc`     | Borders, dividers         |
+| `background`       | `#f8f8f8`     | Page background           |
+| `foreground`       | `#121212`     | Primary text              |
+| `card`             | white         | Card backgrounds          |
+| `card-foreground`  | `#101828`     | Card text                 |
+| `muted-foreground` | `#4a5565`     | Secondary/muted text      |
+
 Never use arbitrary color values like `bg-[#ffffff]` or `text-[#4a5565]` when a semantic variable exists.
+If a new color is needed, add it to the `@theme` block in `globals.css` rather than using arbitrary values.
 
 ## Line Height
 
@@ -39,3 +93,44 @@ biome format --write <file_path>
 ```
 
 Do not hardcode formatting rules here — Biome is the source of truth for style (indentation, quotes, trailing commas, etc.).
+
+## Figma-to-Code Workflow
+
+When given a Figma URL or asked to implement a design, follow these steps:
+
+### 1. Understand the Design
+- Use `get_screenshot` first to see the full visual design
+- Use `get_metadata` to discover page structure or find specific frames
+- Use `get_variable_defs` to understand the design token system
+
+### 2. Extract Details
+- Use `get_design_context` on the specific frame/component — this is the primary tool
+- For nested layouts, call `get_design_context` on individual child components
+- Always pass `clientLanguages: "typescript,html,css"` and `clientFrameworks: "react,next"`
+
+### 3. Implement
+- Map Figma values to existing Tailwind theme tokens (see Design Tokens above)
+- Reuse existing shadcn/ui components from `src/components/ui/`
+- Figma auto-layout → Tailwind Flexbox: `layoutMode` → `flex-row`/`flex-col`, `itemSpacing` → `gap-*`, `padding` → `p-*`
+- Match Figma spacing to Tailwind's 4px-base scale (8px → `2`, 16px → `4`, 24px → `6`)
+
+### 4. Verify
+- Use `get_screenshot` again and visually compare against your implementation
+- Check exact values with `get_design_context` if anything looks off
+- Confirm semantic tokens are used, not raw values
+
+### Figma Token Mapping
+- Blue brand color → `primary` (`bg-primary`, `text-primary`)
+- Orange accent → `secondary` (`bg-secondary`, `text-secondary`)
+- Light border gray → `light-gray` (`border-light-gray`)
+- Background → `background` (`bg-background`)
+- Body text → `foreground` (`text-foreground`)
+- Muted text → `muted-foreground` (`text-muted-foreground`)
+- Card surfaces → `card` / `card-foreground`
+
+### Common Pitfalls
+- Do NOT skip the screenshot step — always look at the design visually first
+- Do NOT call `get_design_context` on entire pages — target specific frames
+- Do NOT hardcode hex colors — map to CSS custom properties
+- Do NOT over-nest just because Figma's layer tree is deep — flatten where sensible
+- If a Figma component has variants (hover, disabled, sizes), implement all states
