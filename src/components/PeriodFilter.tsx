@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import {
   Combobox,
   ComboboxContent,
@@ -9,7 +10,6 @@ import {
   ComboboxList,
 } from "@/components/ui/combobox";
 import { InputGroupAddon } from "@/components/ui/input-group";
-import Icon from "@/components/Icon";
 
 function generatePeriods(): string[] {
   const periods: string[] = [];

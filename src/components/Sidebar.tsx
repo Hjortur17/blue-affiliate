@@ -1,8 +1,7 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
-
-import { IconComponent, Icon } from "./Icon";
-
 import { cn } from "@/lib/utils";
+
+import { Icon, IconComponent } from "./Icon";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 
 const navigation: {
   name: string;

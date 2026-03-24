@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import StatsGrid from "@/components/StatsGrid";
 import BookingTypesDistribution from "@/components/BookingTypesDistribution";
-import TopCars from "@/components/TopCars";
 import NoteBanner from "@/components/NoteBanner";
 import PeriodFilter from "@/components/PeriodFilter";
+import StatsGrid from "@/components/StatsGrid";
+import TopCars from "@/components/TopCars";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function getDefaultPeriod(): string {
   const now = new Date();
