@@ -1,37 +1,7 @@
 import { cn } from "@/lib/utils";
+import type { StatCard } from "@/types/data";
 
-type StatCard = {
-  label: string;
-  value: string;
-  subtext: string;
-  subtextColor?: "green" | "red" | "muted";
-};
-
-const stats: StatCard[] = [
-  {
-    label: "Total Bookings",
-    value: "234",
-    subtext: "+12% from last month",
-    subtextColor: "green",
-  },
-  {
-    label: "Total Revenue",
-    value: "1,245,000 Kr",
-    subtext: "Excl. VAT",
-  },
-  {
-    label: "Expected Commission",
-    value: "62,250 Kr",
-    subtext: "Excl. VAT",
-  },
-  {
-    label: "Total Clicks",
-    value: "3450",
-    subtext: "Conversion: 6.8%",
-  },
-];
-
-export default function StatsGrid() {
+export default function StatsGrid({ stats }: { stats: StatCard[] }) {
   return (
     <div className="grid grid-cols-4 gap-6">
       {stats.map((stat) => (
