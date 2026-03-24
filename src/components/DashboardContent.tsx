@@ -31,30 +31,6 @@ const topCarsColumns: Column<TopCar>[] = [
   { id: "bookings", header: "Bookings", accessor: "bookings", align: "right" },
 ];
 
-const stats: StatCard[] = [
-  {
-    label: "Total Bookings",
-    value: "234",
-    subtext: "+12% from last month",
-    subtextColor: "green",
-  },
-  {
-    label: "Total Revenue",
-    value: "1,245,000 Kr",
-    subtext: "Excl. VAT",
-  },
-  {
-    label: "Expected Commission",
-    value: "62,250 Kr",
-    subtext: "Excl. VAT",
-  },
-  {
-    label: "Total Clicks",
-    value: "3450",
-    subtext: "Conversion: 6.8%",
-  },
-];
-
 function getDefaultPeriod(): string {
   const now = new Date();
   const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
@@ -80,16 +56,69 @@ export default function DashboardContent() {
 
       <TabsContent value="booking-data">
         <div className="space-y-6">
-          <StatsGrid stats={stats} />
+          <StatsGrid
+            stats={[
+              {
+                label: "Total Bookings",
+                value: "234",
+                subtext: "+12% from last month",
+                subtextColor: "green",
+              },
+              {
+                label: "Total Revenue",
+                value: "1,245,000 Kr",
+                subtext: "Excl. VAT",
+              },
+              {
+                label: "Expected Commission",
+                value: "62,250 Kr",
+                subtext: "Excl. VAT",
+              },
+              {
+                label: "Total Clicks",
+                value: "3450",
+                subtext: "Conversion: 6.8%",
+              },
+            ]}
+          />
 
           <BookingTypesDistribution />
 
           <Table title="Top 5 Cars" icon="Car" columns={topCarsColumns} data={topCarsData} />
+
           <Banner level="info" message="Number of bookings and revenue may change due to cancellations." />
         </div>
       </TabsContent>
       <TabsContent value="delivery-data">
-        <p>Delivery Data</p>
+        <div className="space-y-6">
+          <StatsGrid
+            stats={[
+              {
+                label: "Total Bookings",
+                value: "198",
+                subtext: "+12% from last month",
+                subtextColor: "green",
+              },
+              {
+                label: "Total Revenue",
+                value: "1,056,000 Kr",
+                subtext: "Excl. VAT",
+              },
+              {
+                label: "Total Commission",
+                value: "52,800 Kr",
+                subtext: "Excl. VAT",
+              },
+            ]}
+          />
+
+          <Table title="Top 5 Cars" icon="Car" columns={topCarsColumns} data={topCarsData} />
+
+          <Banner
+            level="info"
+            message="Total Revenue, Total Commission, and Total Bookings are not confirmed values until the month has ended"
+          />
+        </div>
       </TabsContent>
     </Tabs>
   );
