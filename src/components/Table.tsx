@@ -20,7 +20,7 @@ export default function Table<T extends Record<string, unknown>>({ title, icon, 
   return (
     <div className="bg-card border border-light-gray rounded-lg px-6 pt-6 pb-px flex flex-col gap-6">
       <div className="flex items-center gap-2">
-        <IconComponent icon={icon} className="size-5 text-foreground" />
+        <IconComponent icon={icon} className="text-foreground" />
         <h2>{title}</h2>
       </div>
 

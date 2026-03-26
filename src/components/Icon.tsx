@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 
 type IconProps = {
-  size: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg";
   className?: string;
 };
 
@@ -11,8 +11,8 @@ const iconClassnames = (props: IconProps) =>
   cn(
     {
       "size-4": props.size === "sm",
-      "size-6": props.size === "md",
-      "size-8": props.size === "lg",
+      "size-5": props.size === "md" || !props.size,
+      "size-7": props.size === "lg",
     },
     props.className,
     "duration-200 ease-in-out",

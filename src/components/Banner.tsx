@@ -18,7 +18,7 @@ export default function Banner({ level, message }: { level: "info" | "warning" |
     >
       <IconComponent
         icon={iconMap[level] as keyof typeof Icon}
-        className={cn("size-5 shrink-0", {
+        className={cn("shrink-0", {
           "text-primary": level === "info",
           "text-[#854d0e]": level === "warning",
           "text-[#991b1b]": level === "error",

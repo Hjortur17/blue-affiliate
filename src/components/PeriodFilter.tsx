@@ -43,7 +43,7 @@ export default function PeriodFilter({ value, onValueChange }: PeriodFilterProps
         readOnly
       >
         <InputGroupAddon align="inline-start">
-          <Icon.Calendar className="size-5 text-foreground" />
+          <Icon.Calendar className="text-foreground" />
         </InputGroupAddon>
       </ComboboxInput>
       <ComboboxContent>

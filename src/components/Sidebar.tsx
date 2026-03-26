@@ -63,7 +63,7 @@ export default function Sidebar({ className }: { className?: string }) {
                       "hover:bg-light-gray/50 group flex gap-x-3.5 py-3 px-11 font-medium rounded-r-xl relative",
                     )}
                   >
-                    <IconComponent icon={item.icon} className="shrink-0 size-7" />
+                    <IconComponent icon={item.icon} className="shrink-0" size="lg" />
                     {item.name}
                   </a>
                 </li>
