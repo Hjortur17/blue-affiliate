@@ -7,7 +7,7 @@ import PeriodFilter from "@/components/PeriodFilter";
 import StatsGrid from "@/components/StatsGrid";
 import Table, { type Column } from "@/components/Table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { type StatCard, type TopCar } from "@/types/data";
+import { type TopCar } from "@/types/data";
 
 const topCarsData: TopCar[] = [
   { model: "Toyota Corolla", bookings: 142 },
@@ -40,7 +40,7 @@ function getDefaultPeriod(): string {
   });
 }
 
-export default function DashboardContent() {
+export default function Home() {
   const [period, setPeriod] = useState(getDefaultPeriod());
 
   return (
