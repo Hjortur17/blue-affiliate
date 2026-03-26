@@ -8,6 +8,7 @@ import StatsGrid from "@/components/StatsGrid";
 import Table, { type Column } from "@/components/Table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { type TopCar } from "@/types/data";
+import { getDefaultPeriod } from "@/lib/dates";
 
 const topCarsData: TopCar[] = [
   { model: "Toyota Corolla", bookings: 142 },
@@ -30,15 +31,6 @@ const topCarsColumns: Column<TopCar>[] = [
   { id: "model", header: "Car Model", accessor: "model" },
   { id: "bookings", header: "Bookings", accessor: "bookings", align: "right" },
 ];
-
-function getDefaultPeriod(): string {
-  const now = new Date();
-  const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  return lastMonth.toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
-  });
-}
 
 export default function Home() {
   const [period, setPeriod] = useState(getDefaultPeriod());
