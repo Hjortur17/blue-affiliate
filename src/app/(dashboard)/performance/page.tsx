@@ -1,0 +1,223 @@
+"use client";
+
+import { Fragment, useState } from "react";
+import PeriodFilter from "@/components/PeriodFilter";
+import { getDefaultPeriod } from "@/lib/dates";
+import { Heading1 } from "@/components/ui/typography";
+import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import Banner from "@/components/Banner";
+
+const chartData = [
+  { date: "Dec 21", clicks: 300 },
+  { date: "Jan 2", clicks: 460 },
+  { date: "Jan 4", clicks: 150 },
+  { date: "Jan 6", clicks: 455 },
+  { date: "Jan 8", clicks: 175 },
+  { date: "Jan 10", clicks: 480 },
+  { date: "Jan 14", clicks: 335 },
+  { date: "Jan 18", clicks: 460 },
+  { date: "Jan 22", clicks: 310 },
+  { date: "Jan 26", clicks: 450 },
+];
+const clicksConfig = {
+  clicks: {
+    label: "Clicks",
+    color: "var(--color-primary)",
+  },
+} satisfies ChartConfig;
+
+const bookingsData = [
+  { date: "Jan 2", bookings: 14 },
+  { date: "Jan 4", bookings: 30 },
+  { date: "Jan 6", bookings: 31 },
+  { date: "Jan 8", bookings: 25 },
+  { date: "Jan 12", bookings: 17 },
+  { date: "Jan 16", bookings: 33 },
+  { date: "Jan 20", bookings: 16 },
+  { date: "Jan 24", bookings: 43 },
+  { date: "Jan 28", bookings: 38 },
+];
+const bookingsConfig = {
+  bookings: {
+    label: "Bookings",
+    color: "var(--color-secondary)",
+  },
+} satisfies ChartConfig;
+
+const completedRentalsData = [
+  { date: "Jan 2", rentals: 1 },
+  { date: "Jan 4", rentals: 7 },
+  { date: "Jan 6", rentals: 6 },
+  { date: "Jan 8", rentals: 12 },
+  { date: "Jan 12", rentals: 9 },
+  { date: "Jan 16", rentals: 2.5 },
+  { date: "Jan 20", rentals: 9 },
+  { date: "Jan 24", rentals: 4 },
+  { date: "Jan 28", rentals: 11 },
+];
+const completedRentalsConfig = {
+  rentals: {
+    label: "Rentals",
+    color: "var(--color-secondary)",
+  },
+} satisfies ChartConfig;
+
+const upcomingRentalsData = [
+  { date: "Jan 29", rentals: 4 },
+  { date: "Jan 30", rentals: 5 },
+  { date: "Feb 1", rentals: 10 },
+  { date: "Feb 2", rentals: 3 },
+  { date: "Feb 3", rentals: 2 },
+  { date: "Feb 4", rentals: 5 },
+  { date: "Feb 5", rentals: 8 },
+  { date: "Feb 6", rentals: 7.5 },
+  { date: "Feb 7", rentals: 11 },
+  { date: "Feb 8", rentals: 15 },
+  { date: "Feb 9", rentals: 15 },
+  { date: "Feb 10", rentals: 9.5 },
+  { date: "Feb 11", rentals: 12 },
+  { date: "Feb 12", rentals: 11 },
+];
+const upcomingRentalsConfig = {
+  rentals: {
+    label: "Rentals",
+    color: "var(--color-primary)",
+  },
+} satisfies ChartConfig;
+
+export default function Home() {
+  const [period, setPeriod] = useState(getDefaultPeriod());
+
+  return (
+    <Fragment>
+      <section>
+        <div className="flex items-center gap-4 mb-10.25">
+          <Heading1 className="min-w-109.25">Performance (Booking Date)</Heading1>
+
+          <PeriodFilter value={period} onValueChange={setPeriod} />
+        </div>
+
+        <div className="grid grid-cols-2 gap-x-6">
+          <div className="bg-white border rounded-lg p-6">
+            <p className="mb-1.25">Clicks per Day</p>
+            <p className="text-[#6A7282] text-sm mb-5.25">Daily click traffic from affiliate links</p>
+            <ChartContainer config={clicksConfig} className="lg:max-h-64 xl:max-h-80 w-full">
+              <LineChart data={chartData}>
+                <CartesianGrid vertical={false} stroke="var(--color-light-gray)" />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: "#999", fontSize: 11 }}
+                  padding={{ left: 0, right: 0 }}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: "#999", fontSize: 11 }}
+                  domain={[0, 600]}
+                  ticks={[0, 150, 300, 450, 600]}
+                  width={32}
+                />
+                <Line type="monotone" dataKey="clicks" stroke="var(--color-clicks)" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ChartContainer>
+          </div>
+          <div className="bg-white border rounded-lg p-6">
+            <p className="mb-1.25">Bookings Created per Day</p>
+            <p className="text-[#6A7282] text-sm mb-5.25">New bookings generated through your affiliate links</p>
+            <ChartContainer config={bookingsConfig} className="lg:max-h-64 xl:max-h-80 w-full">
+              <LineChart data={bookingsData}>
+                <CartesianGrid vertical={false} stroke="var(--color-light-gray)" />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: "#999", fontSize: 11 }}
+                  padding={{ left: 0, right: 0 }}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: "#999", fontSize: 11 }}
+                  domain={[0, 60]}
+                  ticks={[0, 15, 30, 45, 60]}
+                  width={32}
+                />
+                <Line type="monotone" dataKey="bookings" stroke="var(--color-bookings)" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ChartContainer>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-12.25 mb-10">
+        <div className="flex items-center gap-4">
+          <Heading1 className="min-w-109.25">Performance (Rental Date)</Heading1>
+
+          <PeriodFilter value={period} onValueChange={setPeriod} />
+        </div>
+        <div className="mb-6">
+          <p className="mb-1.25">Commission Pipeline (Rental Date)</p>
+          <p className="text-secondary">Upcoming + Completed Rentals</p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-x-6">
+          <div className="bg-white border rounded-lg p-6">
+            <p className="mb-1.25">Upcoming Rentals by Pickup Date</p>
+            <p className="text-[#6A7282] text-sm mb-5.25">Scheduled rentals in your commission pipeline</p>
+            <ChartContainer config={upcomingRentalsConfig} className="lg:max-h-64 xl:max-h-80 w-full">
+              <BarChart data={upcomingRentalsData}>
+                <CartesianGrid vertical={false} stroke="var(--color-light-gray)" />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: "#999", fontSize: 11 }}
+                  padding={{ left: 0, right: 0 }}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: "#999", fontSize: 11 }}
+                  domain={[0, 16]}
+                  ticks={[0, 4, 8, 12, 16]}
+                  width={32}
+                />
+                <Bar dataKey="rentals" fill="var(--color-rentals)" radius={[3, 3, 0, 0]} />
+              </BarChart>
+            </ChartContainer>
+          </div>
+          <div className="bg-white border rounded-lg p-6">
+            <p className="mb-1.25">Completed Rentals by Dropoff Date</p>
+            <p className="text-primary text-sm mb-5.25">Completed rentals = commission earned</p>
+            <ChartContainer config={completedRentalsConfig} className="lg:max-h-64 xl:max-h-80 w-full">
+              <LineChart data={completedRentalsData}>
+                <CartesianGrid vertical={false} stroke="var(--color-light-gray)" />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: "#999", fontSize: 11 }}
+                  padding={{ left: 0, right: 0 }}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: "#999", fontSize: 11 }}
+                  domain={[0, 12]}
+                  ticks={[0, 3, 6, 9, 12]}
+                  width={32}
+                />
+                <Line type="monotone" dataKey="rentals" stroke="var(--color-rentals)" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ChartContainer>
+          </div>
+        </div>
+      </section>
+
+      <Banner level="info" message="Number of bookings and revenue may change due to cancellations." />
+    </Fragment>
+  );
+}

@@ -1,3 +1,7 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+
 import { cn } from "@/lib/utils";
 
 import { Icon, IconComponent } from "./Icon";
@@ -7,24 +11,13 @@ const navigation: {
   name: string;
   href: string;
   icon: keyof typeof Icon;
-  current: boolean;
 }[] = [
-  { name: "Dashboard", href: "#", icon: "Car", current: true },
-  { name: "Performance", href: "#", icon: "Graph", current: false },
-  {
-    name: "Marketing material",
-    href: "#",
-    icon: "LongArrowRight",
-    current: false,
-  },
-  { name: "Academy", href: "#", icon: "GraduationCap", current: false },
-  {
-    name: "Request payout",
-    href: "#",
-    icon: "Information",
-    current: false,
-  },
-  { name: "Log out", href: "#", icon: "LogOut", current: false },
+  { name: "Dashboard", href: "/", icon: "Car" },
+  { name: "Performance", href: "/performance", icon: "Graph" },
+  { name: "Marketing material", href: "/marketing-material", icon: "LongArrowRight" },
+  { name: "Academy", href: "#", icon: "GraduationCap" },
+  { name: "Request payout", href: "#", icon: "Information" },
+  { name: "Log out", href: "#", icon: "LogOut" },
 ];
 
 const accordion = [
@@ -51,18 +44,21 @@ const accordion = [
 ];
 
 export default function Sidebar({ className }: { className?: string }) {
+  const pathname = usePathname();
+
   return (
     <aside className={cn("space-y-2.5", className)}>
       <div className="border border-light-gray rounded-2xl p-8">
         <nav className="flex flex-1 flex-col">
           <ul role="list" className="-mx-2 space-y-1">
             {navigation.map((item) => {
+              const current = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
               return (
                 <li key={item.name}>
                   <a
                     href={item.href}
                     className={cn(
-                      item.current &&
+                      current &&
                         "h-15 flex items-center bg-light-gray/50 rounded-r-xl before:content-[''] before:absolute before:inset-y-0 before:left-0 before:h-full before:w-2 before:bg-secondary",
                       "hover:bg-light-gray/50 group flex gap-x-3.5 py-3 px-11 font-medium rounded-r-xl relative",
                     )}
