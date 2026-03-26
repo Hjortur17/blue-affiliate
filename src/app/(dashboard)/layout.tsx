@@ -4,10 +4,23 @@ import "../globals.css";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 import { cn } from "@/lib/utils";
+import localFont from "next/font/local";
 
 const hostGrotesk = Host_Grotesk({
   variable: "--font-host-grotesk",
   subsets: ["latin"],
+});
+
+const blueDisplay = localFont({
+  src: [
+    {
+      path: "../../../public/fonts/BlueDisplay-Regular.otf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+  variable: "--font-blue",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -21,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("bg-background", "font-sans", hostGrotesk.variable)}>
+    <html lang="en" className={cn("bg-background", "font-sans", hostGrotesk.variable, blueDisplay.variable)}>
       <body className="antialiased p-8">
         <Navbar />
 
