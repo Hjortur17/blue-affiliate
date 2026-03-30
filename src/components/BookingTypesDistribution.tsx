@@ -19,7 +19,7 @@ export default function BookingTypesDistribution() {
 
   return (
     <div className="bg-white border border-[#e5e7eb] rounded-lg px-6 pt-6 pb-6 flex flex-col gap-6">
-      <h2 className="text-xl font-medium/7.5 tracking-[-0.45px]">Booking Types Distribution</h2>
+      <h2 className="text-lg sm:text-xl font-medium/7.5 tracking-[-0.45px]">Booking Types Distribution</h2>
       <div className="flex flex-col gap-4">
         {bookingTypes.map(({ label, count, percentage }) => (
           <div key={label} className="flex flex-col gap-2">

@@ -57,7 +57,7 @@ export default function Home() {
       </section>
 
       <section>
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {banners.map((banner, i) => (
             <Card key={i} className="gap-0">
               <img src={banner.image} alt={banner.title} className="aspect-video w-full object-cover max-h-55" />

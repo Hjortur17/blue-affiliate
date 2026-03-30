@@ -8,6 +8,7 @@ import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import Banner from "@/components/Banner";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const chartData = [
   { date: "Dec 21", clicks: 300 },
@@ -93,17 +94,17 @@ export default function Home() {
   return (
     <Fragment>
       <section>
-        <div className="flex items-center gap-4 mb-10.25">
-          <Heading1 className="min-w-109.25">Performance (Booking Date)</Heading1>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-10.25">
+          <Heading1 className="lg:min-w-109.25">Performance (Booking Date)</Heading1>
 
-          <PeriodFilter value={period} onValueChange={setPeriod} inputClassName="h-9" />
+          <PeriodFilter value={period} onValueChange={setPeriod} inputClassName="h-9 hidden sm:flex" />
 
-          <Badge variant="default" className="bg-primary text-white text-sm h-auto py-2.25 px-7 ml-auto">
+          <Badge variant="default" className="bg-primary text-white text-sm h-auto py-2.25 px-7 sm:ml-auto">
             Clicks + Bookings Created
           </Badge>
         </div>
 
-        <div className="grid grid-cols-2 gap-x-6">
+        <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 gap-x-6">
           <div className="bg-white border rounded-lg p-6">
             <p className="mb-1.25">Clicks per Day</p>
             <p className="text-[#6A7282] text-sm mb-5.25">Daily click traffic from affiliate links</p>
@@ -155,24 +156,91 @@ export default function Home() {
             </ChartContainer>
           </div>
         </div>
+
+        <Tabs defaultValue="clicks-per-day" className="w-full block sm:hidden">
+          <div className="flex flex-col-reverse sm:flex-row gap-2 mb-4 sm:mb-8">
+            <TabsList className="w-full">
+              <TabsTrigger value="clicks-per-day">Clicks per Day</TabsTrigger>
+              <TabsTrigger value="bookings-created">Bookings Created</TabsTrigger>
+            </TabsList>
+
+            <PeriodFilter value={period} onValueChange={setPeriod} />
+          </div>
+
+          <TabsContent value="clicks-per-day">
+            <div className="bg-white border rounded-lg p-6">
+              <p className="mb-1.25">Clicks per Day</p>
+              <p className="text-[#6A7282] text-sm mb-5.25">Daily click traffic from affiliate links</p>
+              <ChartContainer config={clicksConfig} className="lg:max-h-64 xl:max-h-80 w-full">
+                <LineChart data={chartData}>
+                  <CartesianGrid vertical={false} stroke="var(--color-light-gray)" />
+                  <XAxis
+                    dataKey="date"
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fill: "#999", fontSize: 11 }}
+                    padding={{ left: 0, right: 0 }}
+                  />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fill: "#999", fontSize: 11 }}
+                    domain={[0, 600]}
+                    ticks={[0, 150, 300, 450, 600]}
+                    width={32}
+                  />
+                  <Line type="monotone" dataKey="clicks" stroke="var(--color-clicks)" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ChartContainer>
+            </div>
+          </TabsContent>
+          <TabsContent value="bookings-created">
+            <div className="bg-white border rounded-lg p-6">
+              <p className="mb-1.25">Bookings Created per Day</p>
+              <p className="text-[#6A7282] text-sm mb-5.25">New bookings generated through your affiliate links</p>
+              <ChartContainer config={bookingsConfig} className="lg:max-h-64 xl:max-h-80 w-full">
+                <LineChart data={bookingsData}>
+                  <CartesianGrid vertical={false} stroke="var(--color-light-gray)" />
+                  <XAxis
+                    dataKey="date"
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fill: "#999", fontSize: 11 }}
+                    padding={{ left: 0, right: 0 }}
+                  />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fill: "#999", fontSize: 11 }}
+                    domain={[0, 60]}
+                    ticks={[0, 15, 30, 45, 60]}
+                    width={32}
+                  />
+                  <Line type="monotone" dataKey="bookings" stroke="var(--color-bookings)" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ChartContainer>
+            </div>
+          </TabsContent>
+        </Tabs>
       </section>
 
-      <section className="mt-12.25 mb-10">
-        <div className="flex items-center gap-4">
-          <Heading1 className="min-w-109.25">Performance (Rental Date)</Heading1>
+      <section className="mt-6 sm:mt-12.25 mb-10">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <Heading1 className="lg:min-w-109.25">Performance (Rental Date)</Heading1>
 
-          <PeriodFilter value={period} onValueChange={setPeriod} inputClassName="h-9" />
+          <PeriodFilter value={period} onValueChange={setPeriod} inputClassName="hidden sm:flex h-9" />
 
-          <Badge variant="default" color="secondary" className="text-sm h-auto py-2.25 px-7 ml-auto">
+          <Badge variant="default" color="secondary" className="text-sm h-auto py-2.25 px-7 sm:ml-auto">
             Clicks + Bookings Created
           </Badge>
         </div>
-        <div className="mb-6">
+
+        <div className="hidden sm:block mb-6">
           <p className="mb-1.25">Commission Pipeline (Rental Date)</p>
           <p className="text-secondary">Upcoming + Completed Rentals</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-x-6">
+        <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 gap-x-6">
           <div className="bg-white border rounded-lg p-6">
             <p className="mb-1.25">Upcoming Rentals by Pickup Date</p>
             <p className="text-[#6A7282] text-sm mb-5.25">Scheduled rentals in your commission pipeline</p>
@@ -222,6 +290,54 @@ export default function Home() {
                 <Line type="monotone" dataKey="rentals" stroke="var(--color-rentals)" strokeWidth={2} dot={false} />
               </LineChart>
             </ChartContainer>
+          </div>
+        </div>
+      </section>
+
+      <section className="sm:hidden mb-10">
+        <div className="bg-card border rounded-lg p-5">
+          <p className="text-lg font-medium text-foreground">Commission Pipeline (Rental Date)</p>
+          <p className="text-sm text-secondary">Upcoming + Completed Rentals</p>
+
+          <div className="grid grid-cols-2 gap-4 mt-5">
+            <div className="bg-background rounded-lg p-4">
+              <p className="text-xs text-muted-foreground">Upcoming Rentals</p>
+              <p className="text-2xl font-medium mt-1">44</p>
+            </div>
+            <div className="bg-background rounded-lg p-4">
+              <p className="text-xs text-muted-foreground">Commission Earned</p>
+              <p className="text-2xl font-medium mt-1">28,400 Kr</p>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <p className="text-sm font-medium text-muted-foreground">Upcoming Rentals by Pickup Date</p>
+            <p className="text-xs text-muted-foreground mt-1">Scheduled rentals in your commission pipeline</p>
+
+            <div className="flex flex-col gap-2 mt-4">
+              {upcomingRentalsData.map((row) => (
+                <div key={row.date} className="flex items-center justify-between border-b border-border pb-3">
+                  <span className="text-sm text-foreground">{row.date}</span>
+                  <span className="bg-primary text-white text-sm font-medium rounded px-3 py-1">{row.rentals}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="sm:hidden mb-10">
+        <div className="bg-card border rounded-lg p-5">
+          <p className="text-sm font-medium text-muted-foreground">Completed Rentals by Dropoff Date</p>
+          <p className="text-xs text-secondary mt-1">Completed rentals = commission earned</p>
+
+          <div className="flex flex-col gap-2 mt-4">
+            {completedRentalsData.map((row) => (
+              <div key={row.date} className="flex items-center justify-between border-b border-border pb-3">
+                <span className="text-sm text-foreground">{row.date}</span>
+                <span className="text-sm font-medium text-secondary">{row.rentals} Kr</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>

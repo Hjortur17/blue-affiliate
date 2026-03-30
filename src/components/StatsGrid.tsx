@@ -3,7 +3,7 @@ import type { StatCard } from "@/types/data";
 
 export default function StatsGrid({ stats }: { stats: StatCard[] }) {
   return (
-    <div className="grid grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
       {stats.map((stat) => (
         <div key={stat.label} className="bg-white border rounded-lg p-6 flex flex-col gap-2">
           <p className="text-sm text-muted-foreground">{stat.label}</p>

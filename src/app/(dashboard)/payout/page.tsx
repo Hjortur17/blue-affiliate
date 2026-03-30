@@ -8,6 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Icon, { IconComponent } from "@/components/Icon";
 
+const payoutHistory = [
+  { requestDate: "November 1, 2025", amount: "45,800 Kr", status: "Paid", paidDate: "November 15, 2025" },
+  { requestDate: "October 1, 2025", amount: "38,200 Kr", status: "Paid", paidDate: "October 14, 2025" },
+  { requestDate: "December 1, 2025", amount: "52,100 Kr", status: "Approved", paidDate: "-" },
+];
+
 export default function Home() {
   return (
     <>
@@ -21,12 +27,12 @@ export default function Home() {
       </section>
 
       <section className="mt-8">
-        <div className="flex flex-col gap-2 rounded-lg bg-linear-to-r from-secondary to-[#F54900] pt-8 px-8 pb-8">
+        <div className="flex flex-col gap-2 rounded-lg bg-linear-to-b md:bg-linear-to-r from-secondary to-[#F54900] pt-8 px-8 pb-8">
           <div className="flex items-center gap-3">
             <IconComponent icon="DollarSign" className="size-8 text-white" />
             <span className="text-secondary-muted">Available Balance</span>
           </div>
-          <p className="text-white">62,250 Kr</p>
+          <p className="text-white text-3xl md:text-2xl">62,250 Kr</p>
           <p className="text-secondary-muted text-sm">Minimum payout: 10,000 Kr</p>
         </div>
       </section>
@@ -67,7 +73,8 @@ export default function Home() {
         <div className="flex flex-col gap-6 rounded-lg border border-border bg-card p-6">
           <p className="text-card-foreground">Payout History</p>
 
-          <table className="w-full">
+          {/* Desktop table */}
+          <table className="hidden sm:table w-full">
             <thead>
               <tr className="border-b border-border">
                 <th className="pb-3 pl-4 text-left text-base font-bold text-muted-foreground">Request Date</th>
@@ -77,11 +84,7 @@ export default function Home() {
               </tr>
             </thead>
             <tbody>
-              {[
-                { requestDate: "November 1, 2025", amount: "45,600 Kr", status: "Paid", paidDate: "November 15, 2025" },
-                { requestDate: "October 1, 2025", amount: "38,200 Kr", status: "Paid", paidDate: "October 14, 2025" },
-                { requestDate: "December 1, 2025", amount: "52,100 Kr", status: "Approved", paidDate: "-" },
-              ].map((row) => (
+              {payoutHistory.map((row) => (
                 <tr key={row.requestDate} className="border-b border-border/40">
                   <td className="py-4 pl-4 text-card-foreground">{row.requestDate}</td>
                   <td className="py-4 pl-4 text-card-foreground">{row.amount}</td>
@@ -92,7 +95,7 @@ export default function Home() {
                         "bg-primary/10 text-primary": row.status === "Approved",
                       })}
                     >
-                      <IconComponent icon={row.status === "Paid" ? "CheckCircle" : "CircleCheck"} className="size-4" />
+                      <IconComponent icon="CircleCheck" className="size-4" />
                       {row.status}
                     </span>
                   </td>
@@ -101,6 +104,35 @@ export default function Home() {
               ))}
             </tbody>
           </table>
+
+          {/* Mobile cards */}
+          <div className="flex flex-col gap-3 sm:hidden">
+            {payoutHistory.map((row) => (
+              <div
+                key={row.requestDate}
+                className="flex items-start justify-between rounded-lg border border-border p-4"
+              >
+                <div className="flex flex-col">
+                  <p className="font-medium">{row.amount}</p>
+                  <p className="text-sm text-muted-foreground">Requested: {row.requestDate}</p>
+                  {row.paidDate !== "-" && <p className="text-sm text-muted-foreground">Paid: {row.paidDate}</p>}
+                </div>
+                <span
+                  className={cn(
+                    "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium shrink-0",
+                    {
+                      "bg-success-bg text-success": row.status === "Paid",
+                      "bg-primary/10 text-primary": row.status === "Approved",
+                    },
+                  )}
+                >
+                  {row.status === "Paid" ? <IconComponent icon="CircleCheck" className="size-3" /> : null}
+                  {row.status === "Approved" ? <IconComponent icon="Clock" className="size-3" /> : null}
+                  {row.status}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

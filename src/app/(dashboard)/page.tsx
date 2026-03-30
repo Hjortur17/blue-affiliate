@@ -37,8 +37,8 @@ export default function Home() {
 
   return (
     <Tabs defaultValue="booking-data" className="w-full">
-      <div className="flex gap-4">
-        <TabsList className="mb-8">
+      <div className="flex flex-col-reverse sm:flex-row gap-2 mb-4 sm:mb-8">
+        <TabsList className="w-full sm:w-auto">
           <TabsTrigger value="booking-data">Booking Data</TabsTrigger>
           <TabsTrigger value="delivery-data">Delivery Data</TabsTrigger>
         </TabsList>

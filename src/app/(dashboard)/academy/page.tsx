@@ -104,8 +104,8 @@ export default function Home() {
       </section>
 
       <section>
-        <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-3 flex items-center gap-x-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="col-span-1 md:col-span-3 flex items-center gap-x-2">
             <IconComponent icon="Play" className="text-primary" />
             <h2>Video Tutorials</h2>
           </div>
@@ -131,28 +131,32 @@ export default function Home() {
       </section>
 
       <section className="mt-4">
-        <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-3 flex items-center gap-x-2">
-            <IconComponent icon="Book" className="text-primary" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="col-span-1 sm:col-span-2 lg:col-span-3 flex items-center gap-x-2">
+            <IconComponent icon="BookOpen" className="text-primary" />
             <h2>Blog Posts & Insights</h2>
           </div>
 
           {blogPosts.map((post, i) => (
             <Card key={i} className="gap-0 relative">
-              <img src={post.image} alt={post.title} className="aspect-video w-full object-cover max-h-55" />
-              <CardHeader className="pt-5 flex items-center gap-x-3">
+              <img
+                src={post.image}
+                alt={post.title}
+                className="hidden sm:block aspect-video w-full object-cover max-h-55"
+              />
+              <CardHeader className="sm:pt-5 flex items-center gap-x-3 px-4 pt-4">
                 <Badge>{post.category}</Badge>
                 <div className="flex items-center gap-x-0.5 text-[#6A7282]">
                   <IconComponent icon="Clock" size="sm" />
                   <p className="text-sm">{post.timeToRead} min read</p>
                 </div>
               </CardHeader>
-              <CardContent className="flex flex-col gap-2 pt-4 pb-0">
+              <CardContent className="flex flex-col gap-2 pt-4 pb-0 px-4">
                 <CardTitle>{post.title}</CardTitle>
                 <p className="text-[#4A5565] text-sm line-clamp-3">{post.description}</p>
               </CardContent>
-              <CardFooter className="pt-2">
-                <p className="text-[#6A7282] text-sm">{formatDate(post.publishedAt)}</p>
+              <CardFooter className="pt-3 sm:pt-2 px-4">
+                <p className="text-[#4A5565] md:text-[#6A7282] text-sm">{formatDate(post.publishedAt)}</p>
               </CardFooter>
               <Link href={`/blog/${post.url}`} className="absolute inset-0" />
             </Card>

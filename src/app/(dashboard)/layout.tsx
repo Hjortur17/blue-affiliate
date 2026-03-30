@@ -35,11 +35,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn("bg-background", "font-sans", hostGrotesk.variable, blueDisplay.variable)}>
-      <body className="antialiased p-8">
+      <body className="antialiased p-4 sm:p-8">
         <Navbar />
 
         <div className="mt-10 flex gap-x-14">
-          <Sidebar className="w-full max-w-88" />
+          <Sidebar className="w-full max-w-88 hidden lg:block" />
 
           <main className="flex-1">{children}</main>
         </div>
