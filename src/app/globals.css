@@ -8,6 +8,8 @@
   --color-primary: #155dfc;
   --color-secondary: #ff6900;
   --color-light-gray: #dcdcdc;
+  --color-success: #008236;
+  --color-success-bg: #dcfce7;
 }
 
 @theme inline {

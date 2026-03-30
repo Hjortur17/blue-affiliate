@@ -15,8 +15,8 @@ const navigation: {
   { name: "Dashboard", href: "/", icon: "Car" },
   { name: "Performance", href: "/performance", icon: "Graph" },
   { name: "Marketing material", href: "/marketing-material", icon: "LongArrowRight" },
-  { name: "Academy", href: "#", icon: "GraduationCap" },
-  { name: "Request payout", href: "#", icon: "Information" },
+  { name: "Academy", href: "/academy", icon: "GraduationCap" },
+  { name: "Request payout", href: "/payout", icon: "Information" },
   { name: "Log out", href: "#", icon: "LogOut" },
 ];
 
