@@ -23,7 +23,7 @@ const topCarsColumns: Column<TopCar>[] = [
     id: "rank",
     header: "Rank",
     render: (_row, index) => (
-      <span className="inline-flex items-center justify-center size-8 rounded-full bg-[#ffedd4] text-secondary">
+      <span className="inline-flex items-center justify-center size-8 rounded-full bg-secondary-muted text-secondary">
         {index + 1}
       </span>
     ),
