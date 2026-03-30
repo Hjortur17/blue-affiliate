@@ -7,6 +7,7 @@ import { Heading1 } from "@/components/ui/typography";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import Banner from "@/components/Banner";
+import { Badge } from "@/components/ui/badge";
 
 const chartData = [
   { date: "Dec 21", clicks: 300 },
@@ -95,7 +96,11 @@ export default function Home() {
         <div className="flex items-center gap-4 mb-10.25">
           <Heading1 className="min-w-109.25">Performance (Booking Date)</Heading1>
 
-          <PeriodFilter value={period} onValueChange={setPeriod} />
+          <PeriodFilter value={period} onValueChange={setPeriod} inputClassName="h-9" />
+
+          <Badge variant="default" className="bg-primary text-white text-sm h-auto py-2.25 px-7 ml-auto">
+            Clicks + Bookings Created
+          </Badge>
         </div>
 
         <div className="grid grid-cols-2 gap-x-6">
@@ -156,7 +161,11 @@ export default function Home() {
         <div className="flex items-center gap-4">
           <Heading1 className="min-w-109.25">Performance (Rental Date)</Heading1>
 
-          <PeriodFilter value={period} onValueChange={setPeriod} />
+          <PeriodFilter value={period} onValueChange={setPeriod} inputClassName="h-9" />
+
+          <Badge variant="default" color="secondary" className="text-sm h-auto py-2.25 px-7 ml-auto">
+            Clicks + Bookings Created
+          </Badge>
         </div>
         <div className="mb-6">
           <p className="mb-1.25">Commission Pipeline (Rental Date)</p>

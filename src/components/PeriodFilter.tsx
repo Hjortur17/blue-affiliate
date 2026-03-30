@@ -10,6 +10,7 @@ import {
   ComboboxList,
 } from "@/components/ui/combobox";
 import { InputGroupAddon } from "@/components/ui/input-group";
+import { cn } from "@/lib/utils";
 
 function generatePeriods(): string[] {
   const periods: string[] = [];
@@ -32,14 +33,15 @@ const periods = generatePeriods();
 interface PeriodFilterProps {
   value: string;
   onValueChange: (value: string) => void;
+  inputClassName?: string;
 }
 
-export default function PeriodFilter({ value, onValueChange }: PeriodFilterProps) {
+export default function PeriodFilter({ value, onValueChange, inputClassName }: PeriodFilterProps) {
   return (
     <Combobox items={periods} value={value} onValueChange={(val) => onValueChange(val as string)}>
       <ComboboxInput
         placeholder="Select period"
-        className="bg-white h-12.5 shadow-none border-[#E5E7EB] rounded-lg cursor-pointer"
+        className={cn(`bg-white h-12.5 shadow-none border-[#E5E7EB] rounded-lg cursor-pointer`, inputClassName)}
         readOnly
       >
         <InputGroupAddon align="inline-start">
