@@ -11,7 +11,7 @@ export type Column<T> = {
 
 type TableProps<T extends Record<string, unknown>> = {
   title: string;
-  icon: keyof typeof Icon;
+  icon: string;
   columns: Column<T>[];
   data: T[];
 };

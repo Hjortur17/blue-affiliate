@@ -10,7 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./
 const navigation: {
   name: string;
   href: string;
-  icon: keyof typeof Icon;
+  icon: string;
 }[] = [
   { name: "Dashboard", href: "/", icon: "Car" },
   { name: "Performance", href: "/performance", icon: "ChartColumn" },

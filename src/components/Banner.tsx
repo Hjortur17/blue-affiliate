@@ -10,10 +10,10 @@ export default function Banner({
   message?: string;
   items?: string[];
 }) {
-  const iconMap: Record<"info" | "warning" | "error", keyof typeof Icon> = {
-    info: "Information",
-    warning: "Warning",
-    error: "Error",
+  const iconMap: Record<"info" | "warning" | "error", string> = {
+    info: "Info",
+    warning: "TriangleAlert",
+    error: "OctagonX",
   };
 
   const textClass = cn("text-sm tracking-[-0.15px]", {
@@ -33,7 +33,7 @@ export default function Banner({
       })}
     >
       <IconComponent
-        icon={iconMap[level] as keyof typeof Icon}
+        icon={iconMap[level]}
         className={cn("shrink-0", items && "mt-0.5", {
           "text-primary": level === "info",
           "text-[#854d0e]": level === "warning",
