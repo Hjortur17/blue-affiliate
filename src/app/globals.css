@@ -7,6 +7,7 @@
 @theme {
   --color-primary: #155dfc;
   --color-secondary: #ff6900;
+  --color-secondary-muted: #ffedd4;
   --color-light-gray: #dcdcdc;
   --color-success: #008236;
   --color-success-bg: #dcfce7;
