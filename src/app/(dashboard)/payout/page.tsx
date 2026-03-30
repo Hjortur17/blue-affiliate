@@ -1,16 +1,12 @@
 "use client";
 
 import { Heading1 } from "@/components/ui/typography";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { IconComponent } from "@/components/Icon";
 import Banner from "@/components/Banner";
-import { cn, formatDate, formatPrice } from "@/lib/utils";
-import dayjs from "dayjs";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { DollarSign, CircleCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Icon, { IconComponent } from "@/components/Icon";
 
 export default function Home() {
   return (
@@ -27,7 +23,7 @@ export default function Home() {
       <section className="mt-8">
         <div className="flex flex-col gap-2 rounded-lg bg-linear-to-r from-secondary to-[#F54900] pt-8 px-8 pb-8">
           <div className="flex items-center gap-3">
-            <DollarSign className="size-8 text-white" />
+            <IconComponent icon="DollarSign" className="size-8 text-white" />
             <span className="text-secondary-muted">Available Balance</span>
           </div>
           <p className="text-white">62,250 Kr</p>
@@ -96,7 +92,7 @@ export default function Home() {
                         "bg-primary/10 text-primary": row.status === "Approved",
                       })}
                     >
-                      <CircleCheck className="size-4" />
+                      <IconComponent icon={row.status === "Paid" ? "CheckCircle" : "CircleCheck"} className="size-4" />
                       {row.status}
                     </span>
                   </td>

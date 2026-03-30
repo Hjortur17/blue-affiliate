@@ -1,6 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import * as LucideIcons from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 type IconProps = {
   size?: "sm" | "md" | "lg";
@@ -19,26 +21,26 @@ const iconClassnames = (props: IconProps) =>
   );
 
 export const Icon = {
-  Globe: (props: IconProps) => (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={iconClassnames(props)}
-    >
-      <path
-        d="M12 1.91669C18.075 1.91669 22.9998 6.43097 23 11.9997C23 17.5686 18.0751 22.0837 12 22.0837L11.4336 22.07C5.62169 21.7998 1 17.3944 1 11.9997C1.00019 6.43097 5.92499 1.91669 12 1.91669ZM9.58301 15.5593C9.76042 16.7942 10.0247 17.8907 10.3506 18.7868C10.5286 19.2764 10.7198 19.688 10.9121 20.0231C11.2676 20.0611 11.6303 20.0837 12 20.0837C12.3693 20.0837 12.7317 20.061 13.0869 20.0231C13.2791 19.6879 13.4703 19.2765 13.6484 18.7868C13.9742 17.891 14.2386 16.7948 14.416 15.5602C13.642 15.6295 12.8328 15.6667 12 15.6667C11.1669 15.6667 10.3573 15.6285 9.58301 15.5593ZM3.2334 13.8102C3.9715 16.6684 6.41499 19.0418 9.68359 19.8161C9.17597 18.677 8.78188 17.1713 8.55371 15.446C6.29228 15.1469 4.40931 14.561 3.2334 13.8102ZM20.7656 13.8112C19.5897 14.5616 17.707 15.147 15.4463 15.446C15.2182 17.1715 14.823 18.6769 14.3154 19.8161C17.5841 19.0421 20.0271 16.6692 20.7656 13.8112ZM12 9.33759C11.1162 9.3376 10.2641 9.38042 9.45898 9.45966C9.37979 10.2646 9.33692 11.1161 9.33691 11.9997C9.33692 12.8832 9.37982 13.7348 9.45898 14.5397C10.2642 14.619 11.1161 14.6628 12 14.6628C12.8832 14.6628 13.7343 14.6189 14.5391 14.5397C14.6182 13.7347 14.6621 12.8833 14.6621 11.9997C14.6621 11.1161 14.6183 10.2646 14.5391 9.45966C13.7344 9.38054 12.8832 9.3376 12 9.33759ZM8.44043 9.5827C7.20581 9.7601 6.10986 10.0255 5.21387 10.3513C4.36581 10.6596 3.74939 11.0027 3.36426 11.3337C3.18037 11.4918 3.0708 11.6262 3.00684 11.735C3.00359 11.823 3 11.9112 3 11.9997C3 12.0875 3.00364 12.175 3.00684 12.2624C3.07068 12.3714 3.17955 12.5069 3.36426 12.6657C3.74937 12.9967 4.36564 13.3407 5.21387 13.6491C6.10935 13.9747 7.20471 14.2393 8.43848 14.4167C8.36921 13.6424 8.33301 12.8328 8.33301 11.9997C8.33302 11.1666 8.37114 10.357 8.44043 9.5827ZM15.5596 9.5827C15.6288 10.357 15.666 11.1666 15.666 11.9997C15.666 12.8329 15.6279 13.6423 15.5586 14.4167C16.7938 14.2393 17.8909 13.975 18.7871 13.6491C19.6354 13.3406 20.2517 12.9968 20.6367 12.6657C20.8206 12.5076 20.9282 12.3722 20.9922 12.2634C20.9954 12.1757 21 12.0879 21 11.9997C21 11.9109 20.9955 11.8224 20.9922 11.7341C20.9282 11.6255 20.8197 11.4911 20.6367 11.3337C20.2517 11.0027 19.6352 10.6597 18.7871 10.3513C17.8911 10.0254 16.7945 9.76011 15.5596 9.5827ZM14.3145 4.18329C14.8221 5.32248 15.2171 6.82776 15.4453 8.55341C17.7063 8.85226 19.5893 9.43791 20.7656 10.1882C20.0269 7.33017 17.5835 4.95682 14.3145 4.18329ZM9.68359 4.18329C6.41571 4.95722 3.97219 7.33003 3.2334 10.1872C4.40934 9.43708 6.29239 8.85233 8.55273 8.55341C8.78095 6.82802 9.17589 5.32238 9.68359 4.18329ZM12 3.91669C11.6304 3.91669 11.2676 3.93835 10.9121 3.97626C10.7197 4.3115 10.5287 4.72365 10.3506 5.21356C10.0249 6.10925 9.76042 7.20501 9.58301 8.43915C10.3572 8.36991 11.167 8.33369 12 8.33368C12.8328 8.33369 13.6419 8.37091 14.416 8.44012C14.2386 7.20556 13.9742 6.1095 13.6484 5.21356C13.4702 4.72351 13.2792 4.31164 13.0869 3.97626C12.7318 3.93842 12.3693 3.91669 12 3.91669Z"
-        fill="currentColor"
-      />
-    </svg>
-  ),
-  ChevronDown: (props: IconProps) => (
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={iconClassnames(props)}>
-      <path d="M5 9L11.5 15L18 9" stroke="white" strokeWidth="2.2" />
-    </svg>
-  ),
+  // Globe: (props: IconProps) => (
+  //   <svg
+  //     width="24"
+  //     height="24"
+  //     viewBox="0 0 24 24"
+  //     fill="none"
+  //     xmlns="http://www.w3.org/2000/svg"
+  //     className={iconClassnames(props)}
+  //   >
+  //     <path
+  //       d="M12 1.91669C18.075 1.91669 22.9998 6.43097 23 11.9997C23 17.5686 18.0751 22.0837 12 22.0837L11.4336 22.07C5.62169 21.7998 1 17.3944 1 11.9997C1.00019 6.43097 5.92499 1.91669 12 1.91669ZM9.58301 15.5593C9.76042 16.7942 10.0247 17.8907 10.3506 18.7868C10.5286 19.2764 10.7198 19.688 10.9121 20.0231C11.2676 20.0611 11.6303 20.0837 12 20.0837C12.3693 20.0837 12.7317 20.061 13.0869 20.0231C13.2791 19.6879 13.4703 19.2765 13.6484 18.7868C13.9742 17.891 14.2386 16.7948 14.416 15.5602C13.642 15.6295 12.8328 15.6667 12 15.6667C11.1669 15.6667 10.3573 15.6285 9.58301 15.5593ZM3.2334 13.8102C3.9715 16.6684 6.41499 19.0418 9.68359 19.8161C9.17597 18.677 8.78188 17.1713 8.55371 15.446C6.29228 15.1469 4.40931 14.561 3.2334 13.8102ZM20.7656 13.8112C19.5897 14.5616 17.707 15.147 15.4463 15.446C15.2182 17.1715 14.823 18.6769 14.3154 19.8161C17.5841 19.0421 20.0271 16.6692 20.7656 13.8112ZM12 9.33759C11.1162 9.3376 10.2641 9.38042 9.45898 9.45966C9.37979 10.2646 9.33692 11.1161 9.33691 11.9997C9.33692 12.8832 9.37982 13.7348 9.45898 14.5397C10.2642 14.619 11.1161 14.6628 12 14.6628C12.8832 14.6628 13.7343 14.6189 14.5391 14.5397C14.6182 13.7347 14.6621 12.8833 14.6621 11.9997C14.6621 11.1161 14.6183 10.2646 14.5391 9.45966C13.7344 9.38054 12.8832 9.3376 12 9.33759ZM8.44043 9.5827C7.20581 9.7601 6.10986 10.0255 5.21387 10.3513C4.36581 10.6596 3.74939 11.0027 3.36426 11.3337C3.18037 11.4918 3.0708 11.6262 3.00684 11.735C3.00359 11.823 3 11.9112 3 11.9997C3 12.0875 3.00364 12.175 3.00684 12.2624C3.07068 12.3714 3.17955 12.5069 3.36426 12.6657C3.74937 12.9967 4.36564 13.3407 5.21387 13.6491C6.10935 13.9747 7.20471 14.2393 8.43848 14.4167C8.36921 13.6424 8.33301 12.8328 8.33301 11.9997C8.33302 11.1666 8.37114 10.357 8.44043 9.5827ZM15.5596 9.5827C15.6288 10.357 15.666 11.1666 15.666 11.9997C15.666 12.8329 15.6279 13.6423 15.5586 14.4167C16.7938 14.2393 17.8909 13.975 18.7871 13.6491C19.6354 13.3406 20.2517 12.9968 20.6367 12.6657C20.8206 12.5076 20.9282 12.3722 20.9922 12.2634C20.9954 12.1757 21 12.0879 21 11.9997C21 11.9109 20.9955 11.8224 20.9922 11.7341C20.9282 11.6255 20.8197 11.4911 20.6367 11.3337C20.2517 11.0027 19.6352 10.6597 18.7871 10.3513C17.8911 10.0254 16.7945 9.76011 15.5596 9.5827ZM14.3145 4.18329C14.8221 5.32248 15.2171 6.82776 15.4453 8.55341C17.7063 8.85226 19.5893 9.43791 20.7656 10.1882C20.0269 7.33017 17.5835 4.95682 14.3145 4.18329ZM9.68359 4.18329C6.41571 4.95722 3.97219 7.33003 3.2334 10.1872C4.40934 9.43708 6.29239 8.85233 8.55273 8.55341C8.78095 6.82802 9.17589 5.32238 9.68359 4.18329ZM12 3.91669C11.6304 3.91669 11.2676 3.93835 10.9121 3.97626C10.7197 4.3115 10.5287 4.72365 10.3506 5.21356C10.0249 6.10925 9.76042 7.20501 9.58301 8.43915C10.3572 8.36991 11.167 8.33369 12 8.33368C12.8328 8.33369 13.6419 8.37091 14.416 8.44012C14.2386 7.20556 13.9742 6.1095 13.6484 5.21356C13.4702 4.72351 13.2792 4.31164 13.0869 3.97626C12.7318 3.93842 12.3693 3.91669 12 3.91669Z"
+  //       fill="currentColor"
+  //     />
+  //   </svg>
+  // ),
+  // ChevronDown: (props: IconProps) => (
+  //   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={iconClassnames(props)}>
+  //     <path d="M5 9L11.5 15L18 9" stroke="white" strokeWidth="2.2" />
+  //   </svg>
+  // ),
   User: (props: IconProps) => (
     <svg
       width="24"
@@ -64,38 +66,38 @@ export const Icon = {
       />
     </svg>
   ),
-  Graph: (props: IconProps) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" className={iconClassnames(props)}>
-      <path
-        d="M2.5 2.5V15.8333C2.5 16.2754 2.67559 16.6993 2.98816 17.0118C3.30072 17.3244 3.72464 17.5 4.16667 17.5H17.5"
-        stroke="currentColor"
-        strokeWidth="1.66667"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M15 14.1667V7.5"
-        stroke="currentColor"
-        strokeWidth="1.66667"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M10.8333 14.1666V4.16663"
-        stroke="currentColor"
-        strokeWidth="1.66667"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M6.66675 14.1666V11.6666"
-        stroke="currentColor"
-        strokeWidth="1.66667"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  ),
+  // Graph: (props: IconProps) => (
+  //   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" className={iconClassnames(props)}>
+  //     <path
+  //       d="M2.5 2.5V15.8333C2.5 16.2754 2.67559 16.6993 2.98816 17.0118C3.30072 17.3244 3.72464 17.5 4.16667 17.5H17.5"
+  //       stroke="currentColor"
+  //       strokeWidth="1.66667"
+  //       strokeLinecap="round"
+  //       strokeLinejoin="round"
+  //     />
+  //     <path
+  //       d="M15 14.1667V7.5"
+  //       stroke="currentColor"
+  //       strokeWidth="1.66667"
+  //       strokeLinecap="round"
+  //       strokeLinejoin="round"
+  //     />
+  //     <path
+  //       d="M10.8333 14.1666V4.16663"
+  //       stroke="currentColor"
+  //       strokeWidth="1.66667"
+  //       strokeLinecap="round"
+  //       strokeLinejoin="round"
+  //     />
+  //     <path
+  //       d="M6.66675 14.1666V11.6666"
+  //       stroke="currentColor"
+  //       strokeWidth="1.66667"
+  //       strokeLinecap="round"
+  //       strokeLinejoin="round"
+  //     />
+  //   </svg>
+  // ),
   LongArrowRight: (props: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 27" fill="none" className={iconClassnames(props)}>
       <path
@@ -106,67 +108,67 @@ export const Icon = {
       />
     </svg>
   ),
-  GraduationCap: (props: IconProps) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" fill="none" className={iconClassnames(props)}>
-      <path
-        d="M24.99 12.7423C25.1989 12.6502 25.3761 12.4988 25.4998 12.3069C25.6234 12.115 25.6881 11.8911 25.6857 11.6628C25.6834 11.4346 25.6141 11.212 25.4865 11.0227C25.3589 10.8335 25.1786 10.6858 24.9678 10.598L14.9683 6.0433C14.6644 5.90464 14.3341 5.83289 14 5.83289C13.6659 5.83289 13.3357 5.90464 13.0317 6.0433L3.03334 10.5933C2.82564 10.6843 2.64894 10.8338 2.52487 11.0236C2.40079 11.2134 2.33472 11.4352 2.33472 11.662C2.33472 11.8887 2.40079 12.1106 2.52487 12.3004C2.64894 12.4901 2.82564 12.6397 3.03334 12.7306L13.0317 17.29C13.3357 17.4286 13.6659 17.5004 14 17.5004C14.3341 17.5004 14.6644 17.4286 14.9683 17.29L24.99 12.7423Z"
-        stroke="currentColor"
-        strokeWidth="1.66667"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M25.6667 11.6666V18.6666"
-        stroke="currentColor"
-        strokeWidth="1.66667"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M7 14.5834V18.6667C7 19.595 7.7375 20.4852 9.05025 21.1416C10.363 21.798 12.1435 22.1667 14 22.1667C15.8565 22.1667 17.637 21.798 18.9497 21.1416C20.2625 20.4852 21 19.595 21 18.6667V14.5834"
-        stroke="currentColor"
-        strokeWidth="1.66667"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  ),
-  Information: (props: IconProps) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 27" fill="none" className={iconClassnames(props)}>
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M12.9893 2.65625C18.7891 2.65625 22.9999 6.86281 23 12.6562C23 18.4498 18.7786 22.6562 12.9893 22.6562C7.20001 22.6561 3 18.4497 3 12.6562C3.00012 6.86289 7.2001 2.65636 12.9893 2.65625ZM12.9893 4.79883C8.3689 4.79894 5.14269 8.02959 5.14258 12.6562C5.14258 17.283 8.36882 20.5145 12.9893 20.5146C17.6224 20.5146 20.8574 17.2831 20.8574 12.6562C20.8573 8.02951 17.6097 4.79883 12.9893 4.79883Z"
-        fill="currentColor"
-      />
-      <path d="M13 11L13 17" stroke="currentColor" strokeWidth="2" />
-      <path d="M13 7L13 9" stroke="currentColor" strokeWidth="2" />
-    </svg>
-  ),
-  Warning: (props: IconProps) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 27" fill="none" className={iconClassnames(props)}>
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M12.9893 2.65625C18.7891 2.65625 22.9999 6.86281 23 12.6562C23 18.4498 18.7786 22.6562 12.9893 22.6562C7.20001 22.6561 3 18.4497 3 12.6562C3.00012 6.86289 7.2001 2.65636 12.9893 2.65625ZM12.9893 4.79883C8.3689 4.79894 5.14269 8.02959 5.14258 12.6562C5.14258 17.283 8.36882 20.5145 12.9893 20.5146C17.6224 20.5146 20.8574 17.2831 20.8574 12.6562C20.8573 8.02951 17.6097 4.79883 12.9893 4.79883Z"
-        fill="currentColor"
-      />
-      <path d="M13 11L13 17" stroke="currentColor" strokeWidth="2" />
-      <path d="M13 7L13 9" stroke="currentColor" strokeWidth="2" />
-    </svg>
-  ),
-  Error: (props: IconProps) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 27" fill="none" className={iconClassnames(props)}>
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M12.9893 2.65625C18.7891 2.65625 22.9999 6.86281 23 12.6562C23 18.4498 18.7786 22.6562 12.9893 22.6562C7.20001 22.6561 3 18.4497 3 12.6562C3.00012 6.86289 7.2001 2.65636 12.9893 2.65625ZM12.9893 4.79883C8.3689 4.79894 5.14269 8.02959 5.14258 12.6562C5.14258 17.283 8.36882 20.5145 12.9893 20.5146C17.6224 20.5146 20.8574 17.2831 20.8574 12.6562C20.8573 8.02951 17.6097 4.79883 12.9893 4.79883Z"
-        fill="currentColor"
-      />
-      <path d="M13 11L13 17" stroke="currentColor" strokeWidth="2" />
-      <path d="M13 7L13 9" stroke="currentColor" strokeWidth="2" />
-    </svg>
-  ),
+  // GraduationCap: (props: IconProps) => (
+  //   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" fill="none" className={iconClassnames(props)}>
+  //     <path
+  //       d="M24.99 12.7423C25.1989 12.6502 25.3761 12.4988 25.4998 12.3069C25.6234 12.115 25.6881 11.8911 25.6857 11.6628C25.6834 11.4346 25.6141 11.212 25.4865 11.0227C25.3589 10.8335 25.1786 10.6858 24.9678 10.598L14.9683 6.0433C14.6644 5.90464 14.3341 5.83289 14 5.83289C13.6659 5.83289 13.3357 5.90464 13.0317 6.0433L3.03334 10.5933C2.82564 10.6843 2.64894 10.8338 2.52487 11.0236C2.40079 11.2134 2.33472 11.4352 2.33472 11.662C2.33472 11.8887 2.40079 12.1106 2.52487 12.3004C2.64894 12.4901 2.82564 12.6397 3.03334 12.7306L13.0317 17.29C13.3357 17.4286 13.6659 17.5004 14 17.5004C14.3341 17.5004 14.6644 17.4286 14.9683 17.29L24.99 12.7423Z"
+  //       stroke="currentColor"
+  //       strokeWidth="1.66667"
+  //       strokeLinecap="round"
+  //       strokeLinejoin="round"
+  //     />
+  //     <path
+  //       d="M25.6667 11.6666V18.6666"
+  //       stroke="currentColor"
+  //       strokeWidth="1.66667"
+  //       strokeLinecap="round"
+  //       strokeLinejoin="round"
+  //     />
+  //     <path
+  //       d="M7 14.5834V18.6667C7 19.595 7.7375 20.4852 9.05025 21.1416C10.363 21.798 12.1435 22.1667 14 22.1667C15.8565 22.1667 17.637 21.798 18.9497 21.1416C20.2625 20.4852 21 19.595 21 18.6667V14.5834"
+  //       stroke="currentColor"
+  //       strokeWidth="1.66667"
+  //       strokeLinecap="round"
+  //       strokeLinejoin="round"
+  //     />
+  //   </svg>
+  // ),
+  // Information: (props: IconProps) => (
+  //   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 27" fill="none" className={iconClassnames(props)}>
+  //     <path
+  //       fillRule="evenodd"
+  //       clipRule="evenodd"
+  //       d="M12.9893 2.65625C18.7891 2.65625 22.9999 6.86281 23 12.6562C23 18.4498 18.7786 22.6562 12.9893 22.6562C7.20001 22.6561 3 18.4497 3 12.6562C3.00012 6.86289 7.2001 2.65636 12.9893 2.65625ZM12.9893 4.79883C8.3689 4.79894 5.14269 8.02959 5.14258 12.6562C5.14258 17.283 8.36882 20.5145 12.9893 20.5146C17.6224 20.5146 20.8574 17.2831 20.8574 12.6562C20.8573 8.02951 17.6097 4.79883 12.9893 4.79883Z"
+  //       fill="currentColor"
+  //     />
+  //     <path d="M13 11L13 17" stroke="currentColor" strokeWidth="2" />
+  //     <path d="M13 7L13 9" stroke="currentColor" strokeWidth="2" />
+  //   </svg>
+  // ),
+  // Warning: (props: IconProps) => (
+  //   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 27" fill="none" className={iconClassnames(props)}>
+  //     <path
+  //       fillRule="evenodd"
+  //       clipRule="evenodd"
+  //       d="M12.9893 2.65625C18.7891 2.65625 22.9999 6.86281 23 12.6562C23 18.4498 18.7786 22.6562 12.9893 22.6562C7.20001 22.6561 3 18.4497 3 12.6562C3.00012 6.86289 7.2001 2.65636 12.9893 2.65625ZM12.9893 4.79883C8.3689 4.79894 5.14269 8.02959 5.14258 12.6562C5.14258 17.283 8.36882 20.5145 12.9893 20.5146C17.6224 20.5146 20.8574 17.2831 20.8574 12.6562C20.8573 8.02951 17.6097 4.79883 12.9893 4.79883Z"
+  //       fill="currentColor"
+  //     />
+  //     <path d="M13 11L13 17" stroke="currentColor" strokeWidth="2" />
+  //     <path d="M13 7L13 9" stroke="currentColor" strokeWidth="2" />
+  //   </svg>
+  // ),
+  // Error: (props: IconProps) => (
+  //   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 27" fill="none" className={iconClassnames(props)}>
+  //     <path
+  //       fillRule="evenodd"
+  //       clipRule="evenodd"
+  //       d="M12.9893 2.65625C18.7891 2.65625 22.9999 6.86281 23 12.6562C23 18.4498 18.7786 22.6562 12.9893 22.6562C7.20001 22.6561 3 18.4497 3 12.6562C3.00012 6.86289 7.2001 2.65636 12.9893 2.65625ZM12.9893 4.79883C8.3689 4.79894 5.14269 8.02959 5.14258 12.6562C5.14258 17.283 8.36882 20.5145 12.9893 20.5146C17.6224 20.5146 20.8574 17.2831 20.8574 12.6562C20.8573 8.02951 17.6097 4.79883 12.9893 4.79883Z"
+  //       fill="currentColor"
+  //     />
+  //     <path d="M13 11L13 17" stroke="currentColor" strokeWidth="2" />
+  //     <path d="M13 7L13 9" stroke="currentColor" strokeWidth="2" />
+  //   </svg>
+  // ),
   LogOut: (props: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className={iconClassnames(props)}>
       <path
@@ -196,48 +198,48 @@ export const Icon = {
       <path d="M15.0969 9.28259H13.4337V10.818H15.0969V9.28259Z" fill="currentColor" />
     </svg>
   ),
-  Play: (props: IconProps) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className={iconClassnames(props)}>
-      <path d="M6 3L20 12L6 21V3Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  ),
-  Book: (props: IconProps) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className={iconClassnames(props)}>
-      <path d="M12 7V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path
-        d="M3 18C2.73478 18 2.48043 17.8946 2.29289 17.7071C2.10536 17.5196 2 17.2652 2 17V4C2 3.73478 2.10536 3.48043 2.29289 3.29289C2.48043 3.10536 2.73478 3 3 3H8C9.06087 3 10.0783 3.42143 10.8284 4.17157C11.5786 4.92172 12 5.93913 12 7C12 5.93913 12.4214 4.92172 13.1716 4.17157C13.9217 3.42143 14.9391 3 16 3H21C21.2652 3 21.5196 3.10536 21.7071 3.29289C21.8946 3.48043 22 3.73478 22 4V17C22 17.2652 21.8946 17.5196 21.7071 17.7071C21.5196 17.8946 21.2652 18 21 18H15C14.2044 18 13.4413 18.3161 12.8787 18.8787C12.3161 19.4413 12 20.2044 12 21C12 20.2044 11.6839 19.4413 11.1213 18.8787C10.5587 18.3161 9.79565 18 9 18H3Z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  ),
-  Clock: (props: IconProps) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" className={iconClassnames(props)}>
-      <g clipPath="url(#clip0_123_1138)">
-        <path
-          d="M7.99992 14.6667C11.6818 14.6667 14.6666 11.6819 14.6666 8.00004C14.6666 4.31814 11.6818 1.33337 7.99992 1.33337C4.31802 1.33337 1.33325 4.31814 1.33325 8.00004C1.33325 11.6819 4.31802 14.6667 7.99992 14.6667Z"
-          stroke="currentColor"
-          strokeWidth="1.33333"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M8 4V8L10.6667 9.33333"
-          stroke="currentColor"
-          strokeWidth="1.33333"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </g>
-      <defs>
-        <clipPath id="clip0_123_1138">
-          <rect width="16" height="16" fill="white" />
-        </clipPath>
-      </defs>
-    </svg>
-  ),
+  // Play: (props: IconProps) => (
+  //   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className={iconClassnames(props)}>
+  //     <path d="M6 3L20 12L6 21V3Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  //   </svg>
+  // ),
+  // Book: (props: IconProps) => (
+  //   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className={iconClassnames(props)}>
+  //     <path d="M12 7V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  //     <path
+  //       d="M3 18C2.73478 18 2.48043 17.8946 2.29289 17.7071C2.10536 17.5196 2 17.2652 2 17V4C2 3.73478 2.10536 3.48043 2.29289 3.29289C2.48043 3.10536 2.73478 3 3 3H8C9.06087 3 10.0783 3.42143 10.8284 4.17157C11.5786 4.92172 12 5.93913 12 7C12 5.93913 12.4214 4.92172 13.1716 4.17157C13.9217 3.42143 14.9391 3 16 3H21C21.2652 3 21.5196 3.10536 21.7071 3.29289C21.8946 3.48043 22 3.73478 22 4V17C22 17.2652 21.8946 17.5196 21.7071 17.7071C21.5196 17.8946 21.2652 18 21 18H15C14.2044 18 13.4413 18.3161 12.8787 18.8787C12.3161 19.4413 12 20.2044 12 21C12 20.2044 11.6839 19.4413 11.1213 18.8787C10.5587 18.3161 9.79565 18 9 18H3Z"
+  //       stroke="currentColor"
+  //       strokeWidth="2"
+  //       strokeLinecap="round"
+  //       strokeLinejoin="round"
+  //     />
+  //   </svg>
+  // ),
+  // Clock: (props: IconProps) => (
+  //   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" className={iconClassnames(props)}>
+  //     <g clipPath="url(#clip0_123_1138)">
+  //       <path
+  //         d="M7.99992 14.6667C11.6818 14.6667 14.6666 11.6819 14.6666 8.00004C14.6666 4.31814 11.6818 1.33337 7.99992 1.33337C4.31802 1.33337 1.33325 4.31814 1.33325 8.00004C1.33325 11.6819 4.31802 14.6667 7.99992 14.6667Z"
+  //         stroke="currentColor"
+  //         strokeWidth="1.33333"
+  //         strokeLinecap="round"
+  //         strokeLinejoin="round"
+  //       />
+  //       <path
+  //         d="M8 4V8L10.6667 9.33333"
+  //         stroke="currentColor"
+  //         strokeWidth="1.33333"
+  //         strokeLinecap="round"
+  //         strokeLinejoin="round"
+  //       />
+  //     </g>
+  //     <defs>
+  //       <clipPath id="clip0_123_1138">
+  //         <rect width="16" height="16" fill="white" />
+  //       </clipPath>
+  //     </defs>
+  //   </svg>
+  // ),
 };
 
 export const IconComponent = ({
@@ -245,7 +247,7 @@ export const IconComponent = ({
   size = "md",
   className = "",
 }: {
-  icon: keyof typeof Icon;
+  icon: string;
   size?: "sm" | "md" | "lg";
   className?: string;
 }) => {
@@ -259,13 +261,18 @@ export const IconComponent = ({
 };
 
 const mapNameToIcon = (name: string) => {
-  const icon = Icon[name as keyof typeof Icon];
+  const customIcon = Icon[name as keyof typeof Icon];
+  if (customIcon) return customIcon;
 
-  if (!icon) {
-    return null;
+  const lucideIcon = LucideIcons[name as keyof typeof LucideIcons];
+  if (lucideIcon && typeof lucideIcon === "object" && "displayName" in lucideIcon) {
+    return (props: IconProps) => {
+      const LIcon = lucideIcon as LucideIcon;
+      return <LIcon className={iconClassnames(props)} />;
+    };
   }
 
-  return icon;
+  return null;
 };
 
 export default Icon;

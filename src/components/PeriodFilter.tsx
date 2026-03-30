@@ -1,6 +1,6 @@
 "use client";
 
-import Icon from "@/components/Icon";
+import Icon, { IconComponent } from "@/components/Icon";
 import {
   Combobox,
   ComboboxContent,
@@ -45,7 +45,7 @@ export default function PeriodFilter({ value, onValueChange, inputClassName }: P
         readOnly
       >
         <InputGroupAddon align="inline-start">
-          <Icon.Calendar className="text-foreground" />
+          <IconComponent icon="Calendar" className="text-foreground" />
         </InputGroupAddon>
       </ComboboxInput>
       <ComboboxContent>

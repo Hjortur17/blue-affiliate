@@ -13,10 +13,10 @@ const navigation: {
   icon: keyof typeof Icon;
 }[] = [
   { name: "Dashboard", href: "/", icon: "Car" },
-  { name: "Performance", href: "/performance", icon: "Graph" },
+  { name: "Performance", href: "/performance", icon: "ChartColumn" },
   { name: "Marketing material", href: "/marketing-material", icon: "LongArrowRight" },
   { name: "Academy", href: "/academy", icon: "GraduationCap" },
-  { name: "Request payout", href: "/payout", icon: "Information" },
+  { name: "Request payout", href: "/payout", icon: "Info" },
   { name: "Log out", href: "#", icon: "LogOut" },
 ];
 

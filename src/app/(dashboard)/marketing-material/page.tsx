@@ -1,9 +1,9 @@
 "use client";
 
-import { Download, Image as ImageIcon } from "lucide-react";
 import { Heading1 } from "@/components/ui/typography";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { IconComponent } from "@/components/Icon";
 
 const banners = [
   {
@@ -65,7 +65,7 @@ export default function Home() {
                 <CardTitle>{banner.title}</CardTitle>
                 <div className="flex items-center gap-4 text-muted-foreground text-sm">
                   <span className="flex items-center gap-1">
-                    <ImageIcon size={16} />
+                    <IconComponent icon="Image" className="size-4" />
                     {banner.dimensions}
                   </span>
                   <span>{banner.size}</span>
@@ -73,7 +73,7 @@ export default function Home() {
               </CardContent>
               <CardFooter className="pt-2">
                 <Button className="w-full flex items-center justify-center gap-2" variant="secondary">
-                  <Download className="size-5 -mt-0.5" />
+                  <IconComponent icon="Download" className="size-5 -mt-0.5" />
                   Download Banner
                 </Button>
               </CardFooter>
