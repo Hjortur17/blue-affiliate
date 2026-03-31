@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth";
 import { IconComponent } from "./Icon";
 import { Sheet, SheetContent, SheetTitle } from "./ui/sheet";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
@@ -15,7 +16,7 @@ const navigation = [
   { name: "Marketing material", href: "/marketing-material", icon: "LongArrowRight" },
   { name: "Academy", href: "/academy", icon: "GraduationCap" },
   { name: "Request payout", href: "/payout", icon: "DollarSign" },
-  { name: "Log-out", href: "#", icon: "LogOut" },
+  { name: "Log-out", href: "#", icon: "LogOut", action: "logout" as const },
 ];
 
 const accordion = [
@@ -56,6 +57,7 @@ function NavbarRight() {
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const { affiliate, logout } = useAuth();
 
   return (
     <>
@@ -108,7 +110,15 @@ export default function Navbar() {
                     <li key={item.name}>
                       <a
                         href={item.href}
-                        onClick={() => setOpen(false)}
+                        onClick={(e) => {
+                          if (item.action === "logout") {
+                            e.preventDefault();
+                            setOpen(false);
+                            logout();
+                          } else {
+                            setOpen(false);
+                          }
+                        }}
                         className={cn(
                           "flex items-center gap-3 h-12 px-4 rounded-lg font-medium",
                           current && "bg-light-gray/50 border-l-4 border-secondary",
@@ -141,7 +151,16 @@ export default function Navbar() {
               {/* Affiliate link */}
               <div className="bg-card border border-light-gray/95 rounded-2xl p-6">
                 <p className="text-xl font-medium mb-2">Your affiliate link</p>
-                <p className="text-xs">www.bluecarrental.is/sfvero</p>
+                {affiliate?.affiliateLink && (
+                  <a
+                    href={affiliate.affiliateLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs"
+                  >
+                    {affiliate.affiliateLink.replace(/^https?:\/\//, "")}
+                  </a>
+                )}
               </div>
             </div>
           </div>

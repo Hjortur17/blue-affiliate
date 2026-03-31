@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth";
 
 import { Icon, IconComponent } from "./Icon";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
@@ -11,13 +12,14 @@ const navigation: {
   name: string;
   href: string;
   icon: string;
+  action?: string;
 }[] = [
   { name: "Dashboard", href: "/", icon: "Car" },
   { name: "Performance", href: "/performance", icon: "ChartColumn" },
   { name: "Marketing material", href: "/marketing-material", icon: "LongArrowRight" },
   { name: "Academy", href: "/academy", icon: "GraduationCap" },
   { name: "Request payout", href: "/payout", icon: "Info" },
-  { name: "Log out", href: "#", icon: "LogOut" },
+  { name: "Log out", href: "#", icon: "LogOut", action: "logout" },
 ];
 
 const accordion = [
@@ -45,6 +47,7 @@ const accordion = [
 
 export default function Sidebar({ className }: { className?: string }) {
   const pathname = usePathname();
+  const { affiliate, logout } = useAuth();
 
   return (
     <aside className={cn("space-y-2.5", className)}>
@@ -57,6 +60,14 @@ export default function Sidebar({ className }: { className?: string }) {
                 <li key={item.name}>
                   <a
                     href={item.href}
+                    onClick={
+                      item.action === "logout"
+                        ? (e) => {
+                            e.preventDefault();
+                            logout();
+                          }
+                        : undefined
+                    }
                     className={cn(
                       current &&
                         "h-15 flex items-center bg-light-gray/50 rounded-r-xl before:content-[''] before:absolute before:inset-y-0 before:left-0 before:h-full before:w-2 before:bg-secondary",
@@ -88,9 +99,11 @@ export default function Sidebar({ className }: { className?: string }) {
 
       <div className="border border-light-gray rounded-2xl p-8">
         <p className="font-medium text-2xl mb-2.5">Your affiliate link</p>
-        <a href="#" className="www.bluecarrental.is/sfvero" target="_blank">
-          www.bluecarrental.is/sfvero
-        </a>
+        {affiliate?.affiliateLink && (
+          <a href={affiliate.affiliateLink} target="_blank" rel="noopener noreferrer">
+            {affiliate.affiliateLink.replace(/^https?:\/\//, "")}
+          </a>
+        )}
       </div>
     </aside>
   );

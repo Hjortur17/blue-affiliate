@@ -1,20 +1,96 @@
 "use client";
 
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { Heading1 } from "@/components/ui/typography";
 import Banner from "@/components/Banner";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Icon, { IconComponent } from "@/components/Icon";
+import { IconComponent } from "@/components/Icon";
+import { api, ApiClientError } from "@/lib/api";
+import type { PayoutsData, PayoutStatus } from "@/types/api";
 
-const payoutHistory = [
-  { requestDate: "November 1, 2025", amount: "45,800 Kr", status: "Paid", paidDate: "November 15, 2025" },
-  { requestDate: "October 1, 2025", amount: "38,200 Kr", status: "Paid", paidDate: "October 14, 2025" },
-  { requestDate: "December 1, 2025", amount: "52,100 Kr", status: "Approved", paidDate: "-" },
-];
+const MIN_PAYOUT = 10_000;
 
-export default function Home() {
+const statusStyles: Record<PayoutStatus, { bg: string; icon: string }> = {
+  Paid: { bg: "bg-success-bg text-success", icon: "CircleCheck" },
+  Approved: { bg: "bg-primary/10 text-primary", icon: "Clock" },
+  Pending: { bg: "bg-yellow-100 text-yellow-700", icon: "Clock" },
+  Rejected: { bg: "bg-red-100 text-red-700", icon: "XCircle" },
+};
+
+function formatIsoDate(iso: string): string {
+  const [year, month, day] = iso.split("-");
+  const date = new Date(Number(year), Number(month) - 1, Number(day));
+  return date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+}
+
+export default function PayoutPage() {
+  const [data, setData] = useState<PayoutsData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [amount, setAmount] = useState("");
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const result = await api.getPayouts();
+      setData(result);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load payout data");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setSubmitError(null);
+
+    const numAmount = Number(amount);
+    if (numAmount < MIN_PAYOUT) {
+      setSubmitError(`Minimum payout amount is ${formatPrice(MIN_PAYOUT)}`);
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await api.requestPayout(numAmount);
+      setAmount("");
+      await fetchData();
+    } catch (err) {
+      if (err instanceof ApiClientError) {
+        setSubmitError(err.message);
+      } else {
+        setSubmitError("Failed to submit payout request");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  if (isLoading) return <PayoutSkeleton />;
+
+  if (error) {
+    return (
+      <Banner
+        level="error"
+        message={error}
+        items={["Please try again or contact support if the issue persists."]}
+      />
+    );
+  }
+
+  if (!data) return null;
+
   return (
     <>
       <section>
@@ -32,24 +108,38 @@ export default function Home() {
             <IconComponent icon="DollarSign" className="size-8 text-white" />
             <span className="text-secondary-muted">Available Balance</span>
           </div>
-          <p className="text-white text-3xl md:text-2xl">62,250 Kr</p>
-          <p className="text-secondary-muted text-sm">Minimum payout: 10,000 Kr</p>
+          <p className="text-white text-3xl md:text-2xl">{formatPrice(data.availableBalance)}</p>
+          <p className="text-secondary-muted text-sm">Minimum payout: {formatPrice(MIN_PAYOUT)}</p>
         </div>
       </section>
 
       <section className="mt-8">
-        <div className="flex flex-col gap-6 rounded-lg border border-border bg-card p-6">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-6 rounded-lg border border-border bg-card p-6"
+        >
           <p className="text-card-foreground">New Payout Request</p>
 
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
-              <label className="text-card-foreground">Payout Amount (Kr)</label>
+              <label htmlFor="payout-amount" className="text-card-foreground">
+                Payout Amount (Kr)
+              </label>
               <Input
+                id="payout-amount"
                 type="number"
-                placeholder="Enter amount (min 10,000 Kr)"
+                placeholder={`Enter amount (min ${formatPrice(MIN_PAYOUT)})`}
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
                 className="h-12.5 rounded-lg border-light-gray placeholder:text-card-foreground/50"
               />
             </div>
+
+            {submitError && (
+              <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">
+                {submitError}
+              </div>
+            )}
 
             <Banner
               level="info"
@@ -62,77 +152,89 @@ export default function Home() {
               ]}
             />
 
-            <Button variant="secondary" className="w-full h-12 rounded-lg">
-              Submit Payout Request
+            <Button type="submit" disabled={isSubmitting} variant="secondary" className="w-full h-12 rounded-lg">
+              {isSubmitting ? "Submitting..." : "Submit Payout Request"}
             </Button>
           </div>
-        </div>
+        </form>
       </section>
 
       <section className="mt-8">
         <div className="flex flex-col gap-6 rounded-lg border border-border bg-card p-6">
           <p className="text-card-foreground">Payout History</p>
 
-          {/* Desktop table */}
-          <table className="hidden sm:table w-full">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="pb-3 pl-4 text-left text-base font-bold text-muted-foreground">Request Date</th>
-                <th className="pb-3 pl-4 text-left text-base font-bold text-muted-foreground">Amount</th>
-                <th className="pb-3 pl-4 text-left text-base font-bold text-muted-foreground">Status</th>
-                <th className="pb-3 pl-4 text-left text-base font-bold text-muted-foreground">Paid Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {payoutHistory.map((row) => (
-                <tr key={row.requestDate} className="border-b border-border/40">
-                  <td className="py-4 pl-4 text-card-foreground">{row.requestDate}</td>
-                  <td className="py-4 pl-4 text-card-foreground">{row.amount}</td>
-                  <td className="py-4 pl-4">
-                    <span
-                      className={cn("inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm", {
-                        "bg-success-bg text-success": row.status === "Paid",
-                        "bg-primary/10 text-primary": row.status === "Approved",
-                      })}
-                    >
-                      <IconComponent icon="CircleCheck" className="size-4" />
-                      {row.status}
-                    </span>
-                  </td>
-                  <td className="py-4 pl-4 text-muted-foreground">{row.paidDate}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {data.history.length === 0 ? (
+            <p className="text-muted-foreground text-sm">No payout history yet.</p>
+          ) : (
+            <>
+              {/* Desktop table */}
+              <table className="hidden sm:table w-full">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="pb-3 pl-4 text-left text-base font-bold text-muted-foreground">Request Date</th>
+                    <th className="pb-3 pl-4 text-left text-base font-bold text-muted-foreground">Amount</th>
+                    <th className="pb-3 pl-4 text-left text-base font-bold text-muted-foreground">Status</th>
+                    <th className="pb-3 pl-4 text-left text-base font-bold text-muted-foreground">Paid Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.history.map((row) => {
+                    const style = statusStyles[row.status];
+                    return (
+                      <tr key={row.id} className="border-b border-border/40">
+                        <td className="py-4 pl-4 text-card-foreground">{formatIsoDate(row.requestDate)}</td>
+                        <td className="py-4 pl-4 text-card-foreground">{formatPrice(row.amount)}</td>
+                        <td className="py-4 pl-4">
+                          <span
+                            className={cn(
+                              "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm",
+                              style.bg,
+                            )}
+                          >
+                            <IconComponent icon={style.icon} className="size-4" />
+                            {row.status}
+                          </span>
+                        </td>
+                        <td className="py-4 pl-4 text-muted-foreground">
+                          {row.paidDate ? formatIsoDate(row.paidDate) : "-"}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
 
-          {/* Mobile cards */}
-          <div className="flex flex-col gap-3 sm:hidden">
-            {payoutHistory.map((row) => (
-              <div
-                key={row.requestDate}
-                className="flex items-start justify-between rounded-lg border border-border p-4"
-              >
-                <div className="flex flex-col">
-                  <p className="font-medium">{row.amount}</p>
-                  <p className="text-sm text-muted-foreground">Requested: {row.requestDate}</p>
-                  {row.paidDate !== "-" && <p className="text-sm text-muted-foreground">Paid: {row.paidDate}</p>}
-                </div>
-                <span
-                  className={cn(
-                    "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium shrink-0",
-                    {
-                      "bg-success-bg text-success": row.status === "Paid",
-                      "bg-primary/10 text-primary": row.status === "Approved",
-                    },
-                  )}
-                >
-                  {row.status === "Paid" ? <IconComponent icon="CircleCheck" className="size-3" /> : null}
-                  {row.status === "Approved" ? <IconComponent icon="Clock" className="size-3" /> : null}
-                  {row.status}
-                </span>
+              {/* Mobile cards */}
+              <div className="flex flex-col gap-3 sm:hidden">
+                {data.history.map((row) => {
+                  const style = statusStyles[row.status];
+                  return (
+                    <div
+                      key={row.id}
+                      className="flex items-start justify-between rounded-lg border border-border p-4"
+                    >
+                      <div className="flex flex-col">
+                        <p className="font-medium">{formatPrice(row.amount)}</p>
+                        <p className="text-sm text-muted-foreground">Requested: {formatIsoDate(row.requestDate)}</p>
+                        {row.paidDate && (
+                          <p className="text-sm text-muted-foreground">Paid: {formatIsoDate(row.paidDate)}</p>
+                        )}
+                      </div>
+                      <span
+                        className={cn(
+                          "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium shrink-0",
+                          style.bg,
+                        )}
+                      >
+                        <IconComponent icon={style.icon} className="size-3" />
+                        {row.status}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
-            ))}
-          </div>
+            </>
+          )}
         </div>
       </section>
 
@@ -149,5 +251,16 @@ export default function Home() {
         </div>
       </section>
     </>
+  );
+}
+
+function PayoutSkeleton() {
+  return (
+    <div className="space-y-8 animate-pulse">
+      <div className="h-8 bg-white rounded w-48" />
+      <div className="h-36 bg-secondary/20 rounded-lg" />
+      <div className="h-64 bg-white border rounded-lg" />
+      <div className="h-48 bg-white border rounded-lg" />
+    </div>
   );
 }

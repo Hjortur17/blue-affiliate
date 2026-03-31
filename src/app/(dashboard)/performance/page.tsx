@@ -1,27 +1,17 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import PeriodFilter from "@/components/PeriodFilter";
-import { getDefaultPeriod } from "@/lib/dates";
+import { getDefaultPeriod, formatShortDate, periodToMonthYear } from "@/lib/dates";
 import { Heading1 } from "@/components/ui/typography";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import Banner from "@/components/Banner";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { api } from "@/lib/api";
+import type { EngagementData, RentalsData } from "@/types/api";
 
-const chartData = [
-  { date: "Dec 21", clicks: 300 },
-  { date: "Jan 2", clicks: 460 },
-  { date: "Jan 4", clicks: 150 },
-  { date: "Jan 6", clicks: 455 },
-  { date: "Jan 8", clicks: 175 },
-  { date: "Jan 10", clicks: 480 },
-  { date: "Jan 14", clicks: 335 },
-  { date: "Jan 18", clicks: 460 },
-  { date: "Jan 22", clicks: 310 },
-  { date: "Jan 26", clicks: 450 },
-];
 const clicksConfig = {
   clicks: {
     label: "Clicks",
@@ -29,17 +19,6 @@ const clicksConfig = {
   },
 } satisfies ChartConfig;
 
-const bookingsData = [
-  { date: "Jan 2", bookings: 14 },
-  { date: "Jan 4", bookings: 30 },
-  { date: "Jan 6", bookings: 31 },
-  { date: "Jan 8", bookings: 25 },
-  { date: "Jan 12", bookings: 17 },
-  { date: "Jan 16", bookings: 33 },
-  { date: "Jan 20", bookings: 16 },
-  { date: "Jan 24", bookings: 43 },
-  { date: "Jan 28", bookings: 38 },
-];
 const bookingsConfig = {
   bookings: {
     label: "Bookings",
@@ -47,17 +26,6 @@ const bookingsConfig = {
   },
 } satisfies ChartConfig;
 
-const completedRentalsData = [
-  { date: "Jan 2", rentals: 1 },
-  { date: "Jan 4", rentals: 7 },
-  { date: "Jan 6", rentals: 6 },
-  { date: "Jan 8", rentals: 12 },
-  { date: "Jan 12", rentals: 9 },
-  { date: "Jan 16", rentals: 2.5 },
-  { date: "Jan 20", rentals: 9 },
-  { date: "Jan 24", rentals: 4 },
-  { date: "Jan 28", rentals: 11 },
-];
 const completedRentalsConfig = {
   rentals: {
     label: "Rentals",
@@ -65,22 +33,6 @@ const completedRentalsConfig = {
   },
 } satisfies ChartConfig;
 
-const upcomingRentalsData = [
-  { date: "Jan 29", rentals: 4 },
-  { date: "Jan 30", rentals: 5 },
-  { date: "Feb 1", rentals: 10 },
-  { date: "Feb 2", rentals: 3 },
-  { date: "Feb 3", rentals: 2 },
-  { date: "Feb 4", rentals: 5 },
-  { date: "Feb 5", rentals: 8 },
-  { date: "Feb 6", rentals: 7.5 },
-  { date: "Feb 7", rentals: 11 },
-  { date: "Feb 8", rentals: 15 },
-  { date: "Feb 9", rentals: 15 },
-  { date: "Feb 10", rentals: 9.5 },
-  { date: "Feb 11", rentals: 12 },
-  { date: "Feb 12", rentals: 11 },
-];
 const upcomingRentalsConfig = {
   rentals: {
     label: "Rentals",
@@ -88,8 +40,77 @@ const upcomingRentalsConfig = {
   },
 } satisfies ChartConfig;
 
-export default function Home() {
+function computeAxis(data: { value: number }[]): { domain: [number, number]; ticks: number[] } {
+  if (data.length === 0) return { domain: [0, 10], ticks: [0, 5, 10] };
+  const max = Math.max(...data.map((d) => d.value));
+  const ceiling = Math.ceil(max * 1.2 / 5) * 5 || 10;
+  const step = ceiling / 4;
+  return {
+    domain: [0, ceiling],
+    ticks: [0, step, step * 2, step * 3, ceiling],
+  };
+}
+
+export default function PerformancePage() {
   const [period, setPeriod] = useState(getDefaultPeriod());
+  const [engagement, setEngagement] = useState<EngagementData | null>(null);
+  const [rentals, setRentals] = useState<RentalsData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isFetching, setIsFetching] = useState(false);
+
+  const fetchData = useCallback(async (p: string) => {
+    setIsFetching(true);
+    setError(null);
+    try {
+      const { month, year } = periodToMonthYear(p);
+      const [engagementRes, rentalsRes] = await Promise.all([
+        api.getEngagement(month, year),
+        api.getRentals(month, year),
+      ]);
+      setEngagement(engagementRes);
+      setRentals(rentalsRes);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load performance data");
+    } finally {
+      setIsFetching(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData(period);
+  }, [period, fetchData]);
+
+  const hasData = engagement && rentals;
+
+  if (!hasData && isFetching) return <PerformanceSkeleton />;
+
+  if (!hasData && error) {
+    return (
+      <Banner
+        level="error"
+        message={error}
+        items={["Please try again or contact support if the issue persists."]}
+      />
+    );
+  }
+
+  if (!hasData) return null;
+
+  const chartData = engagement.clicksPerDay.map((d) => ({ date: formatShortDate(d.date), clicks: d.value }));
+  const bookingsData = engagement.bookingsPerDay.map((d) => ({ date: formatShortDate(d.date), bookings: d.value }));
+  const upcomingRentalsData = rentals.upcomingByPickupDate.map((d) => ({
+    date: formatShortDate(d.date),
+    rentals: d.value,
+  }));
+  const completedRentalsData = rentals.completedByDropoffDate.map((d) => ({
+    date: formatShortDate(d.date),
+    rentals: d.value,
+  }));
+
+  const clicksAxis = computeAxis(engagement.clicksPerDay);
+  const bookingsAxis = computeAxis(engagement.bookingsPerDay);
+  const upcomingAxis = computeAxis(rentals.upcomingByPickupDate);
+  const completedAxis = computeAxis(rentals.completedByDropoffDate);
 
   return (
     <Fragment>
@@ -122,8 +143,8 @@ export default function Home() {
                   tickLine={false}
                   axisLine={false}
                   tick={{ fill: "#999", fontSize: 11 }}
-                  domain={[0, 600]}
-                  ticks={[0, 150, 300, 450, 600]}
+                  domain={clicksAxis.domain}
+                  ticks={clicksAxis.ticks}
                   width={32}
                 />
                 <Line type="monotone" dataKey="clicks" stroke="var(--color-clicks)" strokeWidth={2} dot={false} />
@@ -147,8 +168,8 @@ export default function Home() {
                   tickLine={false}
                   axisLine={false}
                   tick={{ fill: "#999", fontSize: 11 }}
-                  domain={[0, 60]}
-                  ticks={[0, 15, 30, 45, 60]}
+                  domain={bookingsAxis.domain}
+                  ticks={bookingsAxis.ticks}
                   width={32}
                 />
                 <Line type="monotone" dataKey="bookings" stroke="var(--color-bookings)" strokeWidth={2} dot={false} />
@@ -185,8 +206,8 @@ export default function Home() {
                     tickLine={false}
                     axisLine={false}
                     tick={{ fill: "#999", fontSize: 11 }}
-                    domain={[0, 600]}
-                    ticks={[0, 150, 300, 450, 600]}
+                    domain={clicksAxis.domain}
+                    ticks={clicksAxis.ticks}
                     width={32}
                   />
                   <Line type="monotone" dataKey="clicks" stroke="var(--color-clicks)" strokeWidth={2} dot={false} />
@@ -212,8 +233,8 @@ export default function Home() {
                     tickLine={false}
                     axisLine={false}
                     tick={{ fill: "#999", fontSize: 11 }}
-                    domain={[0, 60]}
-                    ticks={[0, 15, 30, 45, 60]}
+                    domain={bookingsAxis.domain}
+                    ticks={bookingsAxis.ticks}
                     width={32}
                   />
                   <Line type="monotone" dataKey="bookings" stroke="var(--color-bookings)" strokeWidth={2} dot={false} />
@@ -258,8 +279,8 @@ export default function Home() {
                   tickLine={false}
                   axisLine={false}
                   tick={{ fill: "#999", fontSize: 11 }}
-                  domain={[0, 16]}
-                  ticks={[0, 4, 8, 12, 16]}
+                  domain={upcomingAxis.domain}
+                  ticks={upcomingAxis.ticks}
                   width={32}
                 />
                 <Bar dataKey="rentals" fill="var(--color-rentals)" radius={[3, 3, 0, 0]} />
@@ -283,8 +304,8 @@ export default function Home() {
                   tickLine={false}
                   axisLine={false}
                   tick={{ fill: "#999", fontSize: 11 }}
-                  domain={[0, 12]}
-                  ticks={[0, 3, 6, 9, 12]}
+                  domain={completedAxis.domain}
+                  ticks={completedAxis.ticks}
                   width={32}
                 />
                 <Line type="monotone" dataKey="rentals" stroke="var(--color-rentals)" strokeWidth={2} dot={false} />
@@ -302,11 +323,15 @@ export default function Home() {
           <div className="grid grid-cols-2 gap-4 mt-5">
             <div className="bg-background rounded-lg p-4">
               <p className="text-xs text-muted-foreground">Upcoming Rentals</p>
-              <p className="text-2xl font-medium mt-1">44</p>
+              <p className="text-2xl font-medium mt-1">
+                {rentals.upcomingByPickupDate.reduce((sum, d) => sum + d.value, 0)}
+              </p>
             </div>
             <div className="bg-background rounded-lg p-4">
-              <p className="text-xs text-muted-foreground">Commission Earned</p>
-              <p className="text-2xl font-medium mt-1">28,400 Kr</p>
+              <p className="text-xs text-muted-foreground">Completed Rentals</p>
+              <p className="text-2xl font-medium mt-1">
+                {rentals.completedByDropoffDate.reduce((sum, d) => sum + d.value, 0)}
+              </p>
             </div>
           </div>
 
@@ -335,7 +360,7 @@ export default function Home() {
             {completedRentalsData.map((row) => (
               <div key={row.date} className="flex items-center justify-between border-b border-border pb-3">
                 <span className="text-sm text-foreground">{row.date}</span>
-                <span className="text-sm font-medium text-secondary">{row.rentals} Kr</span>
+                <span className="text-sm font-medium text-secondary">{row.rentals}</span>
               </div>
             ))}
           </div>
@@ -344,5 +369,22 @@ export default function Home() {
 
       <Banner level="info" message="Number of bookings and revenue may change due to cancellations." />
     </Fragment>
+  );
+}
+
+function PerformanceSkeleton() {
+  return (
+    <div className="space-y-6 animate-pulse">
+      <div className="h-10 bg-white border rounded-lg w-64" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="bg-white border rounded-lg p-6 h-72" />
+        <div className="bg-white border rounded-lg p-6 h-72" />
+      </div>
+      <div className="h-10 bg-white border rounded-lg w-64 mt-12" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="bg-white border rounded-lg p-6 h-72" />
+        <div className="bg-white border rounded-lg p-6 h-72" />
+      </div>
+    </div>
   );
 }

@@ -3,19 +3,24 @@
 import { useEffect, useState } from "react";
 import { Progress, ProgressIndicator, ProgressTrack } from "@/components/ui/progress";
 
-const bookingTypes = [
-  { label: "Standard", count: 156, percentage: 66.7 },
-  { label: "Premium", count: 52, percentage: 22.2 },
-  { label: "Luxury", count: 26, percentage: 11.1 },
-];
+interface BookingTypesDistributionProps {
+  distribution: { standard: number; premium: number; luxury: number };
+}
 
-export default function BookingTypesDistribution() {
+export default function BookingTypesDistribution({ distribution }: BookingTypesDistributionProps) {
   const [animated, setAnimated] = useState(false);
 
   useEffect(() => {
     const id = requestAnimationFrame(() => setAnimated(true));
     return () => cancelAnimationFrame(id);
   }, []);
+
+  const total = distribution.standard + distribution.premium + distribution.luxury;
+  const bookingTypes = [
+    { label: "Standard", count: distribution.standard, percentage: total > 0 ? (distribution.standard / total) * 100 : 0 },
+    { label: "Premium", count: distribution.premium, percentage: total > 0 ? (distribution.premium / total) * 100 : 0 },
+    { label: "Luxury", count: distribution.luxury, percentage: total > 0 ? (distribution.luxury / total) * 100 : 0 },
+  ];
 
   return (
     <div className="bg-white border border-[#e5e7eb] rounded-lg px-6 pt-6 pb-6 flex flex-col gap-6">
@@ -26,7 +31,7 @@ export default function BookingTypesDistribution() {
             <div className="flex items-center justify-between">
               <span className="text-[#364153] tracking-[-0.31px]">{label}</span>
               <span className="tracking-[-0.31px]">
-                {count} ({percentage}%)
+                {count} ({percentage.toFixed(1)}%)
               </span>
             </div>
             <Progress value={animated ? percentage : 0}>

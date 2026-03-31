@@ -1,39 +1,129 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import BookingTypesDistribution from "@/components/BookingTypesDistribution";
 import Banner from "@/components/Banner";
 import PeriodFilter from "@/components/PeriodFilter";
 import StatsGrid from "@/components/StatsGrid";
 import Table, { type Column } from "@/components/Table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { type TopCar } from "@/types/data";
-import { getDefaultPeriod } from "@/lib/dates";
+import { getDefaultPeriod, periodToMonthYear } from "@/lib/dates";
+import { api } from "@/lib/api";
+import { formatPrice } from "@/lib/utils";
+import type { DashboardSummary } from "@/types/api";
+import type { StatCard } from "@/types/data";
 
-const topCarsData: TopCar[] = [
-  { model: "Toyota Corolla", bookings: 142 },
-  { model: "Honda Civic", bookings: 118 },
-  { model: "Ford Focus", bookings: 97 },
-  { model: "BMW 3 Series", bookings: 84 },
-  { model: "Audi A4", bookings: 76 },
-];
+interface TopCarRow {
+  rank: number;
+  model: string;
+}
 
-const topCarsColumns: Column<TopCar>[] = [
+const topCarsColumns: Column<TopCarRow>[] = [
   {
     id: "rank",
     header: "Rank",
-    render: (_row, index) => (
+    render: (row) => (
       <span className="inline-flex items-center justify-center size-8 rounded-full bg-secondary-muted text-secondary">
-        {index + 1}
+        {row.rank}
       </span>
     ),
   },
   { id: "model", header: "Car Model", accessor: "model" },
-  { id: "bookings", header: "Bookings", accessor: "bookings", align: "right" },
 ];
+
+function buildBookingStats(data: DashboardSummary): StatCard[] {
+  const changePercent = data.totalBookings.changePercent;
+  const changeSign = changePercent >= 0 ? "+" : "";
+
+  return [
+    {
+      label: "Total Bookings",
+      value: data.totalBookings.value.toLocaleString(),
+      subtext: `${changeSign}${changePercent}% from last month`,
+      subtextColor: changePercent >= 0 ? "green" : "red",
+    },
+    {
+      label: "Total Revenue",
+      value: formatPrice(data.totalRevenue.value),
+      subtext: "Excl. VAT",
+    },
+    {
+      label: "Expected Commission",
+      value: formatPrice(data.expectedCommission.value),
+      subtext: "Excl. VAT",
+    },
+    {
+      label: "Total Clicks",
+      value: data.totalClicks.value.toLocaleString(),
+      subtext: `Conversion: ${data.totalClicks.conversionPercent}%`,
+    },
+  ];
+}
+
+function buildDeliveryStats(data: DashboardSummary): StatCard[] {
+  const changePercent = data.totalBookings.changePercent;
+  const changeSign = changePercent >= 0 ? "+" : "";
+
+  return [
+    {
+      label: "Total Bookings",
+      value: data.totalBookings.value.toLocaleString(),
+      subtext: `${changeSign}${changePercent}% from last month`,
+      subtextColor: changePercent >= 0 ? "green" : "red",
+    },
+    {
+      label: "Total Revenue",
+      value: formatPrice(data.totalRevenue.value),
+      subtext: "Excl. VAT",
+    },
+    {
+      label: "Total Commission",
+      value: formatPrice(data.expectedCommission.value),
+      subtext: "Excl. VAT",
+    },
+  ];
+}
 
 export default function Home() {
   const [period, setPeriod] = useState(getDefaultPeriod());
+  const [data, setData] = useState<DashboardSummary | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isFetching, setIsFetching] = useState(false);
+
+  const fetchData = useCallback(async (p: string) => {
+    setIsFetching(true);
+    setError(null);
+    try {
+      const { month, year } = periodToMonthYear(p);
+      const result = await api.getDashboard(month, year);
+      setData(result);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load dashboard data");
+    } finally {
+      setIsFetching(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData(period);
+  }, [period, fetchData]);
+
+  // Only show skeleton on initial load (no data yet)
+  if (!data && isFetching) {
+    return <DashboardSkeleton />;
+  }
+
+  if (!data && error) {
+    return (
+      <Banner
+        level="error"
+        message={error}
+        items={["Please try again or contact support if the issue persists."]}
+      />
+    );
+  }
+
+  if (!data) return null;
 
   return (
     <Tabs defaultValue="booking-data" className="w-full">
@@ -48,63 +138,20 @@ export default function Home() {
 
       <TabsContent value="booking-data">
         <div className="space-y-6">
-          <StatsGrid
-            stats={[
-              {
-                label: "Total Bookings",
-                value: "234",
-                subtext: "+12% from last month",
-                subtextColor: "green",
-              },
-              {
-                label: "Total Revenue",
-                value: "1,245,000 Kr",
-                subtext: "Excl. VAT",
-              },
-              {
-                label: "Expected Commission",
-                value: "62,250 Kr",
-                subtext: "Excl. VAT",
-              },
-              {
-                label: "Total Clicks",
-                value: "3450",
-                subtext: "Conversion: 6.8%",
-              },
-            ]}
-          />
+          <StatsGrid stats={buildBookingStats(data)} />
 
-          <BookingTypesDistribution />
+          <BookingTypesDistribution distribution={data.bookingTypeDistribution} />
 
-          <Table title="Top 5 Cars" icon="Car" columns={topCarsColumns} data={topCarsData} />
+          <Table title="Top 5 Cars" icon="Car" columns={topCarsColumns} data={data.topCars} />
 
           <Banner level="info" message="Number of bookings and revenue may change due to cancellations." />
         </div>
       </TabsContent>
       <TabsContent value="delivery-data">
         <div className="space-y-6">
-          <StatsGrid
-            stats={[
-              {
-                label: "Total Bookings",
-                value: "198",
-                subtext: "+12% from last month",
-                subtextColor: "green",
-              },
-              {
-                label: "Total Revenue",
-                value: "1,056,000 Kr",
-                subtext: "Excl. VAT",
-              },
-              {
-                label: "Total Commission",
-                value: "52,800 Kr",
-                subtext: "Excl. VAT",
-              },
-            ]}
-          />
+          <StatsGrid stats={buildDeliveryStats(data)} />
 
-          <Table title="Top 5 Cars" icon="Car" columns={topCarsColumns} data={topCarsData} />
+          <Table title="Top 5 Cars" icon="Car" columns={topCarsColumns} data={data.topCars} />
 
           <Banner
             level="info"
@@ -113,5 +160,19 @@ export default function Home() {
         </div>
       </TabsContent>
     </Tabs>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <div className="space-y-6 animate-pulse">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="bg-white border rounded-lg p-6 h-28" />
+        ))}
+      </div>
+      <div className="bg-white border rounded-lg p-6 h-48" />
+      <div className="bg-white border rounded-lg p-6 h-64" />
+    </div>
   );
 }

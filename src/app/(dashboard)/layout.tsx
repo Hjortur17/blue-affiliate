@@ -1,49 +1,44 @@
-import type { Metadata } from "next";
-import { Host_Grotesk } from "next/font/google";
-import "../globals.css";
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { AuthProvider, useAuth } from "@/lib/auth";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
-import { cn } from "@/lib/utils";
-import localFont from "next/font/local";
 
-const hostGrotesk = Host_Grotesk({
-  variable: "--font-host-grotesk",
-  subsets: ["latin"],
-});
+function AuthGuard({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
 
-const blueDisplay = localFont({
-  src: [
-    {
-      path: "../../../public/fonts/BlueDisplay-Regular.otf",
-      weight: "400",
-      style: "normal",
-    },
-  ],
-  variable: "--font-blue",
-  display: "swap",
-});
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push("/login");
+    }
+  }, [isLoading, isAuthenticated, router]);
 
-export const metadata: Metadata = {
-  title: "Blue Affiliate",
-  description: "Blue Affiliate is a platform for creating and managing affiliate programs.",
-};
+  if (isLoading || !isAuthenticated) return null;
 
-export default function RootLayout({
+  return <>{children}</>;
+}
+
+export default function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("bg-background", "font-sans", hostGrotesk.variable, blueDisplay.variable)}>
-      <body className="antialiased p-4 sm:p-8">
-        <Navbar />
+    <AuthProvider>
+      <AuthGuard>
+        <div className="p-4 sm:p-8">
+          <Navbar />
 
-        <div className="mt-10 flex gap-x-14">
-          <Sidebar className="w-full max-w-88 hidden lg:block" />
+          <div className="mt-10 flex gap-x-14">
+            <Sidebar className="w-full max-w-88 hidden lg:block" />
 
-          <main className="flex-1">{children}</main>
+            <main className="flex-1">{children}</main>
+          </div>
         </div>
-      </body>
-    </html>
+      </AuthGuard>
+    </AuthProvider>
   );
 }
