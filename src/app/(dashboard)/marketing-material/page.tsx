@@ -1,9 +1,7 @@
 import { Heading1 } from "@/components/ui/typography";
-import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
-import { IconComponent } from "@/components/Icon";
+import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/prismicio";
-import Image from "next/image";
-import BannerDownloadButton from "@/components/BannerDownloadButton";
+import BannerCard from "@/components/BannerCard";
 
 export default async function MarketingMaterialPage() {
   const client = createClient();
@@ -22,44 +20,34 @@ export default async function MarketingMaterialPage() {
 
       <section>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {/* TODO: Remove fake banner once Prismic has real content */}
+          <BannerCard
+            title="BLUE - Social Media Square"
+            imageUrl="/test.jpg"
+            width={1080}
+            height={1080}
+            dimensions="1080 × 1080"
+            fileSize="1.5 MB"
+          />
+
           {banners.map((banner) => {
             const { title, image, file_size } = banner.data;
             const dimensions =
               image.dimensions ? `${image.dimensions.width} × ${image.dimensions.height}` : "";
             const imageUrl = image.url ?? "";
 
+            if (!imageUrl) return null;
+
             return (
-              <Card key={banner.id} className="gap-0">
-                {imageUrl && (
-                  <Image
-                    src={imageUrl}
-                    alt={title ?? ""}
-                    width={image.dimensions?.width ?? 540}
-                    height={image.dimensions?.height ?? 540}
-                    className="aspect-video w-full object-cover max-h-55"
-                  />
-                )}
-                <CardContent className="flex flex-col gap-2 pt-4 pb-0">
-                  <CardTitle>{title}</CardTitle>
-                  <div className="flex items-center gap-4 text-muted-foreground text-sm">
-                    {dimensions && (
-                      <span className="flex items-center gap-1">
-                        <IconComponent icon="Image" className="size-4" />
-                        {dimensions}
-                      </span>
-                    )}
-                    {file_size && <span>{file_size}</span>}
-                  </div>
-                </CardContent>
-                <CardFooter className="pt-2">
-                  {imageUrl && (
-                    <BannerDownloadButton
-                      imageUrl={imageUrl}
-                      filename={`${title ?? "banner"}.${imageUrl.split(".").pop()?.split("?")[0] ?? "jpg"}`}
-                    />
-                  )}
-                </CardFooter>
-              </Card>
+              <BannerCard
+                key={banner.id}
+                title={title ?? ""}
+                imageUrl={imageUrl}
+                width={image.dimensions?.width ?? 540}
+                height={image.dimensions?.height ?? 540}
+                dimensions={dimensions}
+                fileSize={file_size}
+              />
             );
           })}
         </div>

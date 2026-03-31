@@ -7,7 +7,7 @@ import PeriodFilter from "@/components/PeriodFilter";
 import StatsGrid from "@/components/StatsGrid";
 import Table, { type Column } from "@/components/Table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getDefaultPeriod, periodToMonthYear } from "@/lib/dates";
+import { getDefaultPeriod, periodToDateRange } from "@/lib/dates";
 import { api } from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
 import type { DashboardSummary } from "@/types/api";
@@ -31,55 +31,72 @@ const topCarsColumns: Column<TopCarRow>[] = [
   { id: "model", header: "Car Model", accessor: "model" },
 ];
 
+function changeSubtext(changePercent: number | undefined): { subtext: string; subtextColor: "green" | "red" } | null {
+  if (changePercent == null) return null;
+  const sign = changePercent >= 0 ? "+" : "";
+  return {
+    subtext: `${sign}${changePercent}% from last month`,
+    subtextColor: changePercent >= 0 ? "green" : "red",
+  };
+}
+
 function buildBookingStats(data: DashboardSummary): StatCard[] {
-  const changePercent = data.totalBookings.changePercent;
-  const changeSign = changePercent >= 0 ? "+" : "";
+  const bookingsChange = changeSubtext(data.totalBookings.changePercent);
+  const revenueChange = changeSubtext(data.totalRevenue.changePercent);
+  const commissionChange = changeSubtext(data.expectedCommission.changePercent);
+  const clicksChange = changeSubtext(data.totalClicks.changePercent);
 
   return [
     {
       label: "Total Bookings",
       value: data.totalBookings.value.toLocaleString(),
-      subtext: `${changeSign}${changePercent}% from last month`,
-      subtextColor: changePercent >= 0 ? "green" : "red",
+      subtext: bookingsChange?.subtext ?? "",
+      subtextColor: bookingsChange?.subtextColor,
     },
     {
       label: "Total Revenue",
       value: formatPrice(data.totalRevenue.value),
-      subtext: "Excl. VAT",
+      subtext: revenueChange?.subtext ?? "Excl. VAT",
+      subtextColor: revenueChange?.subtextColor,
     },
     {
       label: "Expected Commission",
       value: formatPrice(data.expectedCommission.value),
-      subtext: "Excl. VAT",
+      subtext: commissionChange?.subtext ?? "Excl. VAT",
+      subtextColor: commissionChange?.subtextColor,
     },
     {
       label: "Total Clicks",
       value: data.totalClicks.value.toLocaleString(),
-      subtext: `Conversion: ${data.totalClicks.conversionPercent}%`,
+      subtext: clicksChange?.subtext ?? `Conversion: ${data.totalClicks.conversionPercent}%`,
+      subtextColor: clicksChange?.subtextColor,
     },
   ];
 }
 
 function buildDeliveryStats(data: DashboardSummary): StatCard[] {
-  const changePercent = data.totalBookings.changePercent;
-  const changeSign = changePercent >= 0 ? "+" : "";
+  const bookingsChange = changeSubtext(data.totalBookings.changePercent);
+  const revenueChange = changeSubtext(data.totalRevenue.changePercent);
+  const commissionChange = changeSubtext(data.expectedCommission.changePercent);
 
   return [
     {
-      label: "Total Bookings",
+      label: "Total Deliveries",
       value: data.totalBookings.value.toLocaleString(),
-      subtext: `${changeSign}${changePercent}% from last month`,
-      subtextColor: changePercent >= 0 ? "green" : "red",
+      subtext: bookingsChange?.subtext ?? "",
+      subtextColor: bookingsChange?.subtextColor,
     },
     {
       label: "Total Revenue",
       value: formatPrice(data.totalRevenue.value),
-      subtext: "Excl. VAT",
+      subtext: revenueChange?.subtext ?? "Excl. VAT",
+      subtextColor: revenueChange?.subtextColor,
     },
     {
       label: "Total Commission",
       value: formatPrice(data.expectedCommission.value),
-      subtext: "Excl. VAT",
+      subtext: commissionChange?.subtext ?? "Excl. VAT",
+      subtextColor: commissionChange?.subtextColor,
     },
   ];
 }
@@ -94,8 +111,8 @@ export default function Home() {
     setIsFetching(true);
     setError(null);
     try {
-      const { month, year } = periodToMonthYear(p);
-      const result = await api.getDashboard(month, year);
+      const range = periodToDateRange(p);
+      const result = await api.getDashboard(range);
       setData(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load dashboard data");

@@ -20,6 +20,13 @@ const statusStyles: Record<PayoutStatus, { bg: string; icon: string }> = {
   Rejected: { bg: "bg-red-100 text-red-700", icon: "XCircle" },
 };
 
+const statusLabels: Record<PayoutStatus, string> = {
+  Paid: "Paid",
+  Approved: "Approved — Awaiting Payment",
+  Pending: "Pending",
+  Rejected: "Rejected",
+};
+
 function formatIsoDate(iso: string): string {
   const [year, month, day] = iso.split("-");
   const date = new Date(Number(year), Number(month) - 1, Number(day));
@@ -192,7 +199,7 @@ export default function PayoutPage() {
                             )}
                           >
                             <IconComponent icon={style.icon} className="size-4" />
-                            {row.status}
+                            {statusLabels[row.status]}
                           </span>
                         </td>
                         <td className="py-4 pl-4 text-muted-foreground">
@@ -227,7 +234,7 @@ export default function PayoutPage() {
                         )}
                       >
                         <IconComponent icon={style.icon} className="size-3" />
-                        {row.status}
+                        {statusLabels[row.status]}
                       </span>
                     </div>
                   );

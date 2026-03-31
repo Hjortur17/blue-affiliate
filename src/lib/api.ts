@@ -57,11 +57,13 @@ async function requestData<T>(path: string, options: RequestInit = {}): Promise<
   return envelope.data;
 }
 
-function dateRangeParams(month: number, year: number): string {
-  const from = `${year}-${String(month).padStart(2, "0")}-01`;
-  const lastDay = new Date(year, month, 0).getDate();
-  const to = `${year}-${String(month).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
-  return `?from=${from}&to=${to}`;
+export interface DateRange {
+  from: string;
+  to: string;
+}
+
+function dateRangeQuery(range: DateRange): string {
+  return `?from=${range.from}&to=${range.to}`;
 }
 
 export const api = {
@@ -72,16 +74,16 @@ export const api = {
     });
   },
 
-  getDashboard(month: number, year: number): Promise<DashboardSummary> {
-    return requestData<DashboardSummary>(`/dashboard/${dateRangeParams(month, year)}`);
+  getDashboard(range: DateRange): Promise<DashboardSummary> {
+    return requestData<DashboardSummary>(`/dashboard/${dateRangeQuery(range)}`);
   },
 
-  getEngagement(month: number, year: number): Promise<EngagementData> {
-    return requestData<EngagementData>(`/performance/engagement/${dateRangeParams(month, year)}`);
+  getEngagement(range: DateRange): Promise<EngagementData> {
+    return requestData<EngagementData>(`/performance/engagement/${dateRangeQuery(range)}`);
   },
 
-  getRentals(month: number, year: number): Promise<RentalsData> {
-    return requestData<RentalsData>(`/performance/rentals/${dateRangeParams(month, year)}`);
+  getRentals(range: DateRange): Promise<RentalsData> {
+    return requestData<RentalsData>(`/performance/rentals/${dateRangeQuery(range)}`);
   },
 
   getPayouts(): Promise<PayoutsData> {

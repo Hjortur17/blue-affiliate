@@ -12,9 +12,9 @@ export interface LoginResponse {
 
 export interface DashboardSummary {
   totalBookings: { value: number; changePercent: number };
-  totalRevenue: { value: number };
-  expectedCommission: { value: number };
-  totalClicks: { value: number; conversionPercent: number };
+  totalRevenue: { value: number; changePercent?: number };
+  expectedCommission: { value: number; changePercent?: number };
+  totalClicks: { value: number; conversionPercent: number; changePercent?: number };
   bookingTypeDistribution: { standard: number; premium: number; luxury: number };
   topCars: { rank: number; model: string }[];
 }

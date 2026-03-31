@@ -12,8 +12,10 @@ import {
 import { InputGroupAddon } from "@/components/ui/input-group";
 import { cn } from "@/lib/utils";
 
+const PRESETS = ["Last 3 months", "Year to date", "Last 12 months"];
+
 function generatePeriods(): string[] {
-  const periods: string[] = [];
+  const periods: string[] = [...PRESETS];
   const now = new Date();
 
   for (let i = 1; i <= 12; i++) {
@@ -52,7 +54,7 @@ export default function PeriodFilter({ value, onValueChange, inputClassName }: P
         <ComboboxEmpty>No periods found.</ComboboxEmpty>
         <ComboboxList>
           {(item) => (
-            <ComboboxItem key={item} value={item}>
+            <ComboboxItem key={item} value={item} className={PRESETS.includes(item) ? "font-medium" : ""}>
               {item}
             </ComboboxItem>
           )}

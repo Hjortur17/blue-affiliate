@@ -9,6 +9,7 @@ import { useAuth } from "@/lib/auth";
 import { IconComponent } from "./Icon";
 import { Sheet, SheetContent, SheetTitle } from "./ui/sheet";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
+import CopyButton from "./CopyButton";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: "Car" },
@@ -152,14 +153,17 @@ export default function Navbar() {
               <div className="bg-card border border-light-gray/95 rounded-2xl p-6">
                 <p className="text-xl font-medium mb-2">Your affiliate link</p>
                 {affiliate?.affiliateLink && (
-                  <a
-                    href={affiliate.affiliateLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs"
-                  >
-                    {affiliate.affiliateLink.replace(/^https?:\/\//, "")}
-                  </a>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={affiliate.affiliateLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs"
+                    >
+                      {affiliate.affiliateLink.replace(/^https?:\/\//, "")}
+                    </a>
+                    <CopyButton value={affiliate.affiliateLink} />
+                  </div>
                 )}
               </div>
             </div>

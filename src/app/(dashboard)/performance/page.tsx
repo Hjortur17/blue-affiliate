@@ -2,14 +2,17 @@
 
 import { Fragment, useCallback, useEffect, useState } from "react";
 import PeriodFilter from "@/components/PeriodFilter";
-import { getDefaultPeriod, formatShortDate, periodToMonthYear } from "@/lib/dates";
+import { getDefaultPeriod, formatShortDate, periodToDateRange } from "@/lib/dates";
 import { Heading1 } from "@/components/ui/typography";
-import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import Banner from "@/components/Banner";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/lib/api";
+import { downloadCsv } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { IconComponent } from "@/components/Icon";
 import type { EngagementData, RentalsData } from "@/types/api";
 
 const clicksConfig = {
@@ -43,11 +46,11 @@ const upcomingRentalsConfig = {
 function computeAxis(data: { value: number }[]): { domain: [number, number]; ticks: number[] } {
   if (data.length === 0) return { domain: [0, 10], ticks: [0, 5, 10] };
   const max = Math.max(...data.map((d) => d.value));
-  const ceiling = Math.ceil(max * 1.2 / 5) * 5 || 10;
+  const ceiling = Math.max(Math.ceil((max * 1.2) / 5) * 5, 10);
   const step = ceiling / 4;
   return {
     domain: [0, ceiling],
-    ticks: [0, step, step * 2, step * 3, ceiling],
+    ticks: [0, step, step * 2, step * 3, ceiling].map(Math.round),
   };
 }
 
@@ -62,10 +65,10 @@ export default function PerformancePage() {
     setIsFetching(true);
     setError(null);
     try {
-      const { month, year } = periodToMonthYear(p);
+      const range = periodToDateRange(p);
       const [engagementRes, rentalsRes] = await Promise.all([
-        api.getEngagement(month, year),
-        api.getRentals(month, year),
+        api.getEngagement(range),
+        api.getRentals(range),
       ]);
       setEngagement(engagementRes);
       setRentals(rentalsRes);
@@ -123,6 +126,23 @@ export default function PerformancePage() {
           <Badge variant="default" className="bg-primary text-white text-sm h-auto py-2.25 px-7 sm:ml-auto">
             Clicks + Bookings Created
           </Badge>
+
+          <Button
+            variant="outline"
+            size="sm"
+            className="hidden sm:flex items-center gap-1.5"
+            onClick={() => {
+              const rows = engagement.clicksPerDay.map((c, i) => ({
+                date: c.date,
+                clicks: c.value,
+                bookings: engagement.bookingsPerDay[i]?.value ?? 0,
+              }));
+              downloadCsv(rows, "engagement-data.csv");
+            }}
+          >
+            <IconComponent icon="Download" className="size-4" />
+            Export CSV
+          </Button>
         </div>
 
         <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 gap-x-6">
@@ -147,6 +167,7 @@ export default function PerformancePage() {
                   ticks={clicksAxis.ticks}
                   width={32}
                 />
+                <ChartTooltip content={<ChartTooltipContent />} />
                 <Line type="monotone" dataKey="clicks" stroke="var(--color-clicks)" strokeWidth={2} dot={false} />
               </LineChart>
             </ChartContainer>
@@ -172,6 +193,7 @@ export default function PerformancePage() {
                   ticks={bookingsAxis.ticks}
                   width={32}
                 />
+                <ChartTooltip content={<ChartTooltipContent />} />
                 <Line type="monotone" dataKey="bookings" stroke="var(--color-bookings)" strokeWidth={2} dot={false} />
               </LineChart>
             </ChartContainer>
@@ -210,7 +232,8 @@ export default function PerformancePage() {
                     ticks={clicksAxis.ticks}
                     width={32}
                   />
-                  <Line type="monotone" dataKey="clicks" stroke="var(--color-clicks)" strokeWidth={2} dot={false} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                <Line type="monotone" dataKey="clicks" stroke="var(--color-clicks)" strokeWidth={2} dot={false} />
                 </LineChart>
               </ChartContainer>
             </div>
@@ -237,7 +260,8 @@ export default function PerformancePage() {
                     ticks={bookingsAxis.ticks}
                     width={32}
                   />
-                  <Line type="monotone" dataKey="bookings" stroke="var(--color-bookings)" strokeWidth={2} dot={false} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                <Line type="monotone" dataKey="bookings" stroke="var(--color-bookings)" strokeWidth={2} dot={false} />
                 </LineChart>
               </ChartContainer>
             </div>
@@ -254,6 +278,23 @@ export default function PerformancePage() {
           <Badge variant="default" color="secondary" className="text-sm h-auto py-2.25 px-7 sm:ml-auto">
             Clicks + Bookings Created
           </Badge>
+
+          <Button
+            variant="outline"
+            size="sm"
+            className="hidden sm:flex items-center gap-1.5"
+            onClick={() => {
+              const rows = rentals.upcomingByPickupDate.map((u, i) => ({
+                date: u.date,
+                upcoming_rentals: u.value,
+                completed_rentals: rentals.completedByDropoffDate[i]?.value ?? 0,
+              }));
+              downloadCsv(rows, "rentals-data.csv");
+            }}
+          >
+            <IconComponent icon="Download" className="size-4" />
+            Export CSV
+          </Button>
         </div>
 
         <div className="hidden sm:block mb-6">
@@ -283,6 +324,7 @@ export default function PerformancePage() {
                   ticks={upcomingAxis.ticks}
                   width={32}
                 />
+                <ChartTooltip content={<ChartTooltipContent />} />
                 <Bar dataKey="rentals" fill="var(--color-rentals)" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ChartContainer>
@@ -308,6 +350,7 @@ export default function PerformancePage() {
                   ticks={completedAxis.ticks}
                   width={32}
                 />
+                <ChartTooltip content={<ChartTooltipContent />} />
                 <Line type="monotone" dataKey="rentals" stroke="var(--color-rentals)" strokeWidth={2} dot={false} />
               </LineChart>
             </ChartContainer>

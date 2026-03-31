@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth";
 
 import { Icon, IconComponent } from "./Icon";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
+import CopyButton from "./CopyButton";
 
 const navigation: {
   name: string;
@@ -100,9 +101,12 @@ export default function Sidebar({ className }: { className?: string }) {
       <div className="border border-light-gray rounded-2xl p-8">
         <p className="font-medium text-2xl mb-2.5">Your affiliate link</p>
         {affiliate?.affiliateLink && (
-          <a href={affiliate.affiliateLink} target="_blank" rel="noopener noreferrer">
-            {affiliate.affiliateLink.replace(/^https?:\/\//, "")}
-          </a>
+          <div className="flex items-center gap-2">
+            <a href={affiliate.affiliateLink} target="_blank" rel="noopener noreferrer">
+              {affiliate.affiliateLink.replace(/^https?:\/\//, "")}
+            </a>
+            <CopyButton value={affiliate.affiliateLink} />
+          </div>
         )}
       </div>
     </aside>
