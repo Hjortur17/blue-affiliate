@@ -1,50 +1,14 @@
-"use client";
-
 import { Heading1 } from "@/components/ui/typography";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { IconComponent } from "@/components/Icon";
+import { createClient } from "@/prismicio";
+import Image from "next/image";
+import BannerDownloadButton from "@/components/BannerDownloadButton";
 
-const banners = [
-  {
-    title: "BLUE - Social Media Square",
-    dimensions: "1080 × 1080",
-    size: "1.5 MB",
-    image: "/test.jpg",
-  },
-  {
-    title: "BLUE - Social Media Square",
-    dimensions: "1080 × 1080",
-    size: "1.5 MB",
-    image: "/test.jpg",
-  },
-  {
-    title: "BLUE - Social Media Square",
-    dimensions: "1080 × 1080",
-    size: "1.5 MB",
-    image: "/test.jpg",
-  },
-  {
-    title: "BLUE - Social Media Square",
-    dimensions: "1080 × 1080",
-    size: "1.5 MB",
-    image: "/test.jpg",
-  },
-  {
-    title: "BLUE - Social Media Square",
-    dimensions: "1080 × 1080",
-    size: "1.5 MB",
-    image: "/test.jpg",
-  },
-  {
-    title: "BLUE - Social Media Square",
-    dimensions: "1080 × 1080",
-    size: "1.5 MB",
-    image: "/test.jpg",
-  },
-];
+export default async function MarketingMaterialPage() {
+  const client = createClient();
+  const banners = await client.getAllByType("marketing_banner").catch(() => []);
 
-export default function Home() {
   return (
     <>
       <section>
@@ -58,27 +22,46 @@ export default function Home() {
 
       <section>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {banners.map((banner, i) => (
-            <Card key={i} className="gap-0">
-              <img src={banner.image} alt={banner.title} className="aspect-video w-full object-cover max-h-55" />
-              <CardContent className="flex flex-col gap-2 pt-4 pb-0">
-                <CardTitle>{banner.title}</CardTitle>
-                <div className="flex items-center gap-4 text-muted-foreground text-sm">
-                  <span className="flex items-center gap-1">
-                    <IconComponent icon="Image" className="size-4" />
-                    {banner.dimensions}
-                  </span>
-                  <span>{banner.size}</span>
-                </div>
-              </CardContent>
-              <CardFooter className="pt-2">
-                <Button className="w-full flex items-center justify-center gap-2" variant="secondary">
-                  <IconComponent icon="Download" className="size-5 -mt-0.5" />
-                  Download Banner
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+          {banners.map((banner) => {
+            const { title, image, file_size } = banner.data;
+            const dimensions =
+              image.dimensions ? `${image.dimensions.width} × ${image.dimensions.height}` : "";
+            const imageUrl = image.url ?? "";
+
+            return (
+              <Card key={banner.id} className="gap-0">
+                {imageUrl && (
+                  <Image
+                    src={imageUrl}
+                    alt={title ?? ""}
+                    width={image.dimensions?.width ?? 540}
+                    height={image.dimensions?.height ?? 540}
+                    className="aspect-video w-full object-cover max-h-55"
+                  />
+                )}
+                <CardContent className="flex flex-col gap-2 pt-4 pb-0">
+                  <CardTitle>{title}</CardTitle>
+                  <div className="flex items-center gap-4 text-muted-foreground text-sm">
+                    {dimensions && (
+                      <span className="flex items-center gap-1">
+                        <IconComponent icon="Image" className="size-4" />
+                        {dimensions}
+                      </span>
+                    )}
+                    {file_size && <span>{file_size}</span>}
+                  </div>
+                </CardContent>
+                <CardFooter className="pt-2">
+                  {imageUrl && (
+                    <BannerDownloadButton
+                      imageUrl={imageUrl}
+                      filename={`${title ?? "banner"}.${imageUrl.split(".").pop()?.split("?")[0] ?? "jpg"}`}
+                    />
+                  )}
+                </CardFooter>
+              </Card>
+            );
+          })}
         </div>
       </section>
 

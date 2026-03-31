@@ -1,0 +1,47 @@
+{
+  "format": "custom",
+  "id": "video_tutorial",
+  "label": "Video Tutorial",
+  "repeatable": true,
+  "status": true,
+  "json": {
+    "Main": {
+      "title": {
+        "type": "Text",
+        "config": {
+          "label": "Title",
+          "placeholder": "Tutorial title"
+        }
+      },
+      "description": {
+        "type": "Text",
+        "config": {
+          "label": "Description",
+          "placeholder": "Short description of the video"
+        }
+      },
+      "thumbnail": {
+        "type": "Image",
+        "config": {
+          "label": "Thumbnail",
+          "constraint": {},
+          "thumbnails": []
+        }
+      },
+      "views": {
+        "type": "Number",
+        "config": {
+          "label": "Views",
+          "placeholder": "Number of views"
+        }
+      },
+      "video_url": {
+        "type": "Text",
+        "config": {
+          "label": "Video URL",
+          "placeholder": "YouTube or Vimeo embed URL"
+        }
+      }
+    }
+  }
+}

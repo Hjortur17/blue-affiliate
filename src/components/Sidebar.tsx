@@ -17,7 +17,7 @@ const navigation: {
   { name: "Dashboard", href: "/", icon: "Car" },
   { name: "Performance", href: "/performance", icon: "ChartColumn" },
   { name: "Marketing material", href: "/marketing-material", icon: "LongArrowRight" },
-  { name: "Academy", href: "/academy", icon: "GraduationCap" },
+  // { name: "Academy", href: "/academy", icon: "GraduationCap" },
   { name: "Request payout", href: "/payout", icon: "Info" },
   { name: "Log out", href: "#", icon: "LogOut", action: "logout" },
 ];
