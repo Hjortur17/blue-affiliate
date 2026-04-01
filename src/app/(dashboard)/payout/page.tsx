@@ -14,22 +14,21 @@ import type { PayoutsData, PayoutStatus } from "@/types/api";
 const MIN_PAYOUT = 10_000;
 
 const statusStyles: Record<PayoutStatus, { bg: string; icon: string }> = {
-  Paid: { bg: "bg-success-bg text-success", icon: "CircleCheck" },
-  Approved: { bg: "bg-primary/10 text-primary", icon: "Clock" },
-  Pending: { bg: "bg-yellow-100 text-yellow-700", icon: "Clock" },
-  Rejected: { bg: "bg-red-100 text-red-700", icon: "XCircle" },
+  paid: { bg: "bg-success-bg text-success", icon: "CircleCheck" },
+  approved: { bg: "bg-primary/10 text-primary", icon: "Clock" },
+  pending: { bg: "bg-yellow-100 text-yellow-700", icon: "Clock" },
+  rejected: { bg: "bg-red-100 text-red-700", icon: "XCircle" },
 };
 
 const statusLabels: Record<PayoutStatus, string> = {
-  Paid: "Paid",
-  Approved: "Approved — Awaiting Payment",
-  Pending: "Pending",
-  Rejected: "Rejected",
+  paid: "Paid",
+  approved: "Approved — Awaiting Payment",
+  pending: "Pending",
+  rejected: "Rejected",
 };
 
 function formatIsoDate(iso: string): string {
-  const [year, month, day] = iso.split("-");
-  const date = new Date(Number(year), Number(month) - 1, Number(day));
+  const date = new Date(iso);
   return date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 }
 
@@ -84,9 +83,7 @@ export default function PayoutPage() {
     }
   }
 
-  if (isLoading) return <PayoutSkeleton />;
-
-  if (error) {
+  if (!isLoading && error) {
     return (
       <Banner
         level="error"
@@ -95,8 +92,6 @@ export default function PayoutPage() {
       />
     );
   }
-
-  if (!data) return null;
 
   return (
     <>
@@ -115,7 +110,11 @@ export default function PayoutPage() {
             <IconComponent icon="DollarSign" className="size-8 text-white" />
             <span className="text-secondary-muted">Available Balance</span>
           </div>
-          <p className="text-white text-3xl md:text-2xl">{formatPrice(data.availableBalance)}</p>
+          {isLoading ? (
+            <div className="animate-pulse h-9 w-40 bg-white/20 rounded" />
+          ) : (
+            <p className="text-white text-3xl md:text-2xl">{data ? formatPrice(data.availableBalance) : "-"}</p>
+          )}
           <p className="text-secondary-muted text-sm">Minimum payout: {formatPrice(MIN_PAYOUT)}</p>
         </div>
       </section>
@@ -159,7 +158,7 @@ export default function PayoutPage() {
               ]}
             />
 
-            <Button type="submit" disabled={isSubmitting} variant="secondary" className="w-full h-12 rounded-lg">
+            <Button type="submit" disabled={isSubmitting || isLoading} variant="secondary" className="w-full h-12 rounded-lg">
               {isSubmitting ? "Submitting..." : "Submit Payout Request"}
             </Button>
           </div>
@@ -170,9 +169,15 @@ export default function PayoutPage() {
         <div className="flex flex-col gap-6 rounded-lg border border-border bg-card p-6">
           <p className="text-card-foreground">Payout History</p>
 
-          {data.history.length === 0 ? (
+          {isLoading ? (
+            <div className="animate-pulse space-y-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="h-12 bg-muted rounded" />
+              ))}
+            </div>
+          ) : data && data.history.length === 0 ? (
             <p className="text-muted-foreground text-sm">No payout history yet.</p>
-          ) : (
+          ) : data ? (
             <>
               {/* Desktop table */}
               <table className="hidden sm:table w-full">
@@ -241,7 +246,7 @@ export default function PayoutPage() {
                 })}
               </div>
             </>
-          )}
+          ) : null}
         </div>
       </section>
 
@@ -258,16 +263,5 @@ export default function PayoutPage() {
         </div>
       </section>
     </>
-  );
-}
-
-function PayoutSkeleton() {
-  return (
-    <div className="space-y-8 animate-pulse">
-      <div className="h-8 bg-white rounded w-48" />
-      <div className="h-36 bg-secondary/20 rounded-lg" />
-      <div className="h-64 bg-white border rounded-lg" />
-      <div className="h-48 bg-white border rounded-lg" />
-    </div>
   );
 }

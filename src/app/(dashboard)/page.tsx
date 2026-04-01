@@ -155,7 +155,7 @@ export default function Home() {
 
       <TabsContent value="booking-data">
         <div className="space-y-6">
-          <StatsGrid stats={buildBookingStats(data)} />
+          <StatsGrid stats={buildBookingStats(data)} loading={isFetching} />
 
           <BookingTypesDistribution distribution={data.bookingTypeDistribution} />
 
@@ -166,7 +166,7 @@ export default function Home() {
       </TabsContent>
       <TabsContent value="delivery-data">
         <div className="space-y-6">
-          <StatsGrid stats={buildDeliveryStats(data)} />
+          <StatsGrid stats={buildDeliveryStats(data)} loading={isFetching} />
 
           <Table title="Top 5 Cars" icon="Car" columns={topCarsColumns} data={data.topCars} />
 

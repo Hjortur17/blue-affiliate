@@ -34,7 +34,7 @@ export interface RentalsData {
   completedByDropoffDate: DailyDataPoint[];
 }
 
-export type PayoutStatus = "Pending" | "Approved" | "Paid" | "Rejected";
+export type PayoutStatus = "pending" | "approved" | "paid" | "rejected";
 
 export interface PayoutRecord {
   id: string;
