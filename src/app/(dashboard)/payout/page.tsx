@@ -94,7 +94,7 @@ export default function PayoutPage() {
   }
 
   return (
-    <>
+    <div className="max-w-[896px]">
       <section>
         <div className="space-y-2">
           <Heading1 className="text-2xl">Request Payout</Heading1>
@@ -262,6 +262,6 @@ export default function PayoutPage() {
           </Link>
         </div>
       </section>
-    </>
+    </div>
   );
 }
