@@ -1,14 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import BookingTypesDistribution from "@/components/BookingTypesDistribution";
 import Banner from "@/components/Banner";
+import BookingTypesDistribution from "@/components/BookingTypesDistribution";
+import { IconComponent } from "@/components/Icon";
 import PeriodFilter from "@/components/PeriodFilter";
 import StatsGrid from "@/components/StatsGrid";
 import Table, { type Column } from "@/components/Table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getDefaultPeriod, periodToDateRange } from "@/lib/dates";
 import { api } from "@/lib/api";
+import { getDefaultPeriod, periodToDateRange } from "@/lib/dates";
 import { formatPrice } from "@/lib/utils";
 import type { DashboardSummary } from "@/types/api";
 import type { StatCard } from "@/types/data";
@@ -31,12 +32,12 @@ const topCarsColumns: Column<TopCarRow>[] = [
   { id: "model", header: "Car Model", accessor: "model" },
 ];
 
-function changeSubtext(changePercent: number | undefined): { subtext: string; subtextColor: "green" | "red" } | null {
-  if (changePercent == null) return null;
-  const sign = changePercent >= 0 ? "+" : "";
+function changeSubtext(changePercent: number | undefined): { subtext: string; subtextColor: "green" | "red" } {
+  const pct = changePercent ?? 0;
+  const sign = pct >= 0 ? "+" : "";
   return {
-    subtext: `${sign}${changePercent}% from last month`,
-    subtextColor: changePercent >= 0 ? "green" : "red",
+    subtext: `${sign}${pct}% from last month`,
+    subtextColor: pct >= 0 ? "green" : "red",
   };
 }
 
@@ -50,26 +51,28 @@ function buildBookingStats(data: DashboardSummary): StatCard[] {
     {
       label: "Total Bookings",
       value: data.totalBookings.value.toLocaleString(),
-      subtext: bookingsChange?.subtext ?? "",
-      subtextColor: bookingsChange?.subtextColor,
+      subtext: bookingsChange.subtext,
+      subtextColor: bookingsChange.subtextColor,
     },
     {
       label: "Total Revenue",
       value: formatPrice(data.totalRevenue.value),
-      subtext: revenueChange?.subtext ?? "Excl. VAT",
-      subtextColor: revenueChange?.subtextColor,
+      subtext: revenueChange.subtext,
+      subtextColor: revenueChange.subtextColor,
     },
     {
       label: "Expected Commission",
       value: formatPrice(data.expectedCommission.value),
-      subtext: commissionChange?.subtext ?? "Excl. VAT",
-      subtextColor: commissionChange?.subtextColor,
+      valueSuffix: "Excl. VAT",
+      subtext: commissionChange.subtext,
+      subtextColor: commissionChange.subtextColor,
+      info: "Your projected commission based on confirmed bookings in the selected period. Final amounts are confirmed once all deliveries are closed.",
     },
     {
       label: "Total Clicks",
       value: data.totalClicks.value.toLocaleString(),
-      subtext: clicksChange?.subtext ?? `Conversion: ${data.totalClicks.conversionPercent}%`,
-      subtextColor: clicksChange?.subtextColor,
+      subtext: clicksChange.subtext,
+      subtextColor: clicksChange.subtextColor,
     },
   ];
 }
@@ -83,20 +86,21 @@ function buildDeliveryStats(data: DashboardSummary): StatCard[] {
     {
       label: "Total Deliveries",
       value: data.totalBookings.value.toLocaleString(),
-      subtext: bookingsChange?.subtext ?? "",
-      subtextColor: bookingsChange?.subtextColor,
+      subtext: bookingsChange.subtext,
+      subtextColor: bookingsChange.subtextColor,
     },
     {
       label: "Total Revenue",
       value: formatPrice(data.totalRevenue.value),
-      subtext: revenueChange?.subtext ?? "Excl. VAT",
-      subtextColor: revenueChange?.subtextColor,
+      subtext: revenueChange.subtext,
+      subtextColor: revenueChange.subtextColor,
     },
     {
       label: "Total Commission",
       value: formatPrice(data.expectedCommission.value),
-      subtext: commissionChange?.subtext ?? "Excl. VAT",
-      subtextColor: commissionChange?.subtextColor,
+      valueSuffix: "Excl. VAT",
+      subtext: commissionChange.subtext,
+      subtextColor: commissionChange.subtextColor,
     },
   ];
 }
@@ -132,11 +136,7 @@ export default function Home() {
 
   if (!data && error) {
     return (
-      <Banner
-        level="error"
-        message={error}
-        items={["Please try again or contact support if the issue persists."]}
-      />
+      <Banner level="error" message={error} items={["Please try again or contact support if the issue persists."]} />
     );
   }
 
@@ -144,13 +144,18 @@ export default function Home() {
 
   return (
     <Tabs defaultValue="booking-data" className="w-full">
-      <div className="flex flex-col-reverse sm:flex-row gap-2 mb-4 sm:mb-8">
+      <div className="flex flex-col-reverse sm:flex-row sm:items-center gap-2 mb-4 sm:mb-8">
         <TabsList className="w-full sm:w-auto">
           <TabsTrigger value="booking-data">Booking Data</TabsTrigger>
           <TabsTrigger value="delivery-data">Delivery Data</TabsTrigger>
         </TabsList>
 
         <PeriodFilter value={period} onValueChange={setPeriod} />
+
+        <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#eff6ff] border border-[#bedbff] sm:ml-auto">
+          <IconComponent icon="Info" className="text-primary shrink-0" />
+          <p className="text-sm font-bold text-[#1c398e]">Your commission is X%</p>
+        </div>
       </div>
 
       <TabsContent value="booking-data">

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "figma-desktop": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "http://127.0.0.1:3845/sse"]
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["chrome-devtools-mcp@latest"]
+    }
+  }
+}

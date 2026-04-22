@@ -1,17 +1,16 @@
 "use client";
 
-import { Fragment, useCallback, useEffect, useState } from "react";
-import PeriodFilter from "@/components/PeriodFilter";
-import { getDefaultPeriod, formatShortDate, periodToDateRange } from "@/lib/dates";
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import Banner from "@/components/Banner";
+import PeriodFilter from "@/components/PeriodFilter";
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/lib/api";
-import { downloadCsv } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { IconComponent } from "@/components/Icon";
-import type { EngagementData, RentalsData } from "@/types/api";
+import { formatShortDate, getDefaultPeriod, periodToDateRange } from "@/lib/dates";
+import { cn, formatPrice } from "@/lib/utils";
+import type { DashboardSummary, EngagementData } from "@/types/api";
 
 const clicksConfig = {
   clicks: {
@@ -27,19 +26,92 @@ const bookingsConfig = {
   },
 } satisfies ChartConfig;
 
-const completedRentalsConfig = {
-  rentals: {
-    label: "Rentals",
-    color: "var(--color-secondary)",
-  },
-} satisfies ChartConfig;
+type SubIdRow = {
+  subId: string;
+  source: string;
+  medium: string;
+  campaign: string;
+  clicks: number;
+  bookings: number;
+  conversion: number;
+  revenue: number;
+};
 
-const upcomingRentalsConfig = {
-  rentals: {
-    label: "Rentals",
-    color: "var(--color-primary)",
+const sampleSubIdRows: SubIdRow[] = [
+  {
+    subId: "blog_post_1",
+    source: "website",
+    medium: "referral",
+    campaign: "content_marketing",
+    clicks: 2547,
+    bookings: 34,
+    conversion: 1.34,
+    revenue: 5780,
   },
-} satisfies ChartConfig;
+  {
+    subId: "instagram_story",
+    source: "instagram",
+    medium: "social",
+    campaign: "summer2026",
+    clicks: 1893,
+    bookings: 28,
+    conversion: 1.48,
+    revenue: 4760,
+  },
+  {
+    subId: "youtube_desc",
+    source: "youtube",
+    medium: "video",
+    campaign: "review_channel",
+    clicks: 1654,
+    bookings: 19,
+    conversion: 1.15,
+    revenue: 3230,
+  },
+  {
+    subId: "facebook_ad",
+    source: "facebook",
+    medium: "paid_social",
+    campaign: "spring_promo",
+    clicks: 1234,
+    bookings: 25,
+    conversion: 2.03,
+    revenue: 4250,
+  },
+  {
+    subId: "email_newsletter",
+    source: "email",
+    medium: "newsletter",
+    campaign: "weekly_digest",
+    clicks: 987,
+    bookings: 15,
+    conversion: 1.52,
+    revenue: 2550,
+  },
+  {
+    subId: "twitter_bio",
+    source: "twitter",
+    medium: "social",
+    campaign: "bio_link",
+    clicks: 654,
+    bookings: 8,
+    conversion: 1.22,
+    revenue: 1360,
+  },
+  {
+    subId: "tiktok_link",
+    source: "tiktok",
+    medium: "social",
+    campaign: "creator_partnership",
+    clicks: 543,
+    bookings: 11,
+    conversion: 2.03,
+    revenue: 1870,
+  },
+];
+
+type SortKey = keyof SubIdRow;
+type SortDirection = "asc" | "desc";
 
 function computeAxis(data: { value: number }[]): { domain: [number, number]; ticks: number[] } {
   if (data.length === 0) return { domain: [0, 10], ticks: [0, 5, 10] };
@@ -55,7 +127,7 @@ function computeAxis(data: { value: number }[]): { domain: [number, number]; tic
 export default function PerformancePage() {
   const [period, setPeriod] = useState(getDefaultPeriod());
   const [engagement, setEngagement] = useState<EngagementData | null>(null);
-  const [rentals, setRentals] = useState<RentalsData | null>(null);
+  const [dashboard, setDashboard] = useState<DashboardSummary | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(false);
 
@@ -64,9 +136,9 @@ export default function PerformancePage() {
     setError(null);
     try {
       const range = periodToDateRange(p);
-      const [engagementRes, rentalsRes] = await Promise.all([api.getEngagement(range), api.getRentals(range)]);
+      const [engagementRes, dashboardRes] = await Promise.all([api.getEngagement(range), api.getDashboard(range)]);
       setEngagement(engagementRes);
-      setRentals(rentalsRes);
+      setDashboard(dashboardRes);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load performance data");
     } finally {
@@ -78,23 +150,13 @@ export default function PerformancePage() {
     fetchData(period);
   }, [period, fetchData]);
 
-  const isInitialLoad = !engagement && !rentals && !error;
+  const isInitialLoad = !engagement && !error;
 
   const chartData = engagement?.clicksPerDay.map((d) => ({ date: formatShortDate(d.date), clicks: d.value }));
   const bookingsData = engagement?.bookingsPerDay.map((d) => ({ date: formatShortDate(d.date), bookings: d.value }));
-  const upcomingRentalsData = rentals?.upcomingByPickupDate.map((d) => ({
-    date: formatShortDate(d.date),
-    rentals: d.value,
-  }));
-  const completedRentalsData = rentals?.completedByDropoffDate.map((d) => ({
-    date: formatShortDate(d.date),
-    rentals: d.value,
-  }));
 
   const clicksAxis = engagement ? computeAxis(engagement.clicksPerDay) : null;
   const bookingsAxis = engagement ? computeAxis(engagement.bookingsPerDay) : null;
-  const upcomingAxis = rentals ? computeAxis(rentals.upcomingByPickupDate) : null;
-  const completedAxis = rentals ? computeAxis(rentals.completedByDropoffDate) : null;
 
   return (
     <Fragment>
@@ -108,50 +170,26 @@ export default function PerformancePage() {
         </div>
       )}
 
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-10.25">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
         <h1 className="uppercase tracking-[-0.31px] font-heading text-2xl">Performance</h1>
 
         <PeriodFilter value={period} onValueChange={setPeriod} inputClassName="h-9 sm:ml-auto" />
       </div>
 
+      {dashboard && <PerformanceStats data={dashboard} />}
+
       <section>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
-          <p className="text-lg font-medium">Engagement (Booking Date)</p>
-
-          {engagement && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="hidden sm:flex items-center gap-1.5 sm:ml-auto"
-              onClick={() => {
-                const rows = engagement.clicksPerDay.map((c, i) => ({
-                  date: c.date,
-                  clicks: c.value,
-                  bookings: engagement.bookingsPerDay[i]?.value ?? 0,
-                }));
-                downloadCsv(rows, "engagement-data.csv");
-              }}
-            >
-              <IconComponent icon="Download" className="size-4" />
-              Export CSV
-            </Button>
-          )}
-        </div>
-
         {/* Desktop engagement charts */}
         <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 gap-x-6">
           {isInitialLoad ? (
             <>
-              <ChartSkeleton title="Clicks per Day" subtitle="Daily click traffic from affiliate links" />
-              <ChartSkeleton
-                title="Bookings Created per Day"
-                subtitle="New bookings generated through your affiliate links"
-              />
+              <ChartSkeleton title="Daily Click Traffic" subtitle="Daily click traffic from affiliate links" />
+              <ChartSkeleton title="Daily Bookings" subtitle="New bookings generated through your affiliate links" />
             </>
           ) : chartData && bookingsData && clicksAxis && bookingsAxis ? (
             <>
-              <div className="bg-white border rounded-lg p-6">
-                <p className="mb-1.25">Clicks per Day</p>
+              <div className="bg-white border border-light-gray rounded-2xl p-6">
+                <p className="mb-1.25">Daily Click Traffic</p>
                 <p className="text-[#6A7282] text-sm mb-5.25">Daily click traffic from affiliate links</p>
                 <ChartContainer config={clicksConfig} className="lg:max-h-64 xl:max-h-80 w-full">
                   <LineChart data={chartData}>
@@ -176,11 +214,11 @@ export default function PerformancePage() {
                   </LineChart>
                 </ChartContainer>
               </div>
-              <div className="bg-white border rounded-lg p-6">
-                <p className="mb-1.25">Bookings Created per Day</p>
+              <div className="bg-white border border-light-gray rounded-2xl p-6">
+                <p className="mb-1.25">Daily Bookings</p>
                 <p className="text-[#6A7282] text-sm mb-5.25">New bookings generated through your affiliate links</p>
                 <ChartContainer config={bookingsConfig} className="lg:max-h-64 xl:max-h-80 w-full">
-                  <LineChart data={bookingsData}>
+                  <BarChart data={bookingsData}>
                     <CartesianGrid vertical={false} stroke="var(--color-light-gray)" />
                     <XAxis
                       dataKey="date"
@@ -198,14 +236,8 @@ export default function PerformancePage() {
                       width={32}
                     />
                     <ChartTooltip content={<ChartTooltipContent />} />
-                    <Line
-                      type="monotone"
-                      dataKey="bookings"
-                      stroke="var(--color-bookings)"
-                      strokeWidth={2}
-                      dot={false}
-                    />
-                  </LineChart>
+                    <Bar dataKey="bookings" fill="var(--color-bookings)" radius={[3, 3, 0, 0]} />
+                  </BarChart>
                 </ChartContainer>
               </div>
             </>
@@ -216,8 +248,8 @@ export default function PerformancePage() {
         <Tabs defaultValue="clicks-per-day" className="w-full block sm:hidden">
           <div className="flex flex-col-reverse sm:flex-row gap-2 mb-4 sm:mb-8">
             <TabsList className="w-full">
-              <TabsTrigger value="clicks-per-day">Clicks per Day</TabsTrigger>
-              <TabsTrigger value="bookings-created">Bookings Created</TabsTrigger>
+              <TabsTrigger value="clicks-per-day">Daily Click Traffic</TabsTrigger>
+              <TabsTrigger value="bookings-created">Daily Bookings</TabsTrigger>
             </TabsList>
           </div>
 
@@ -226,8 +258,8 @@ export default function PerformancePage() {
           ) : chartData && bookingsData && clicksAxis && bookingsAxis ? (
             <>
               <TabsContent value="clicks-per-day">
-                <div className="bg-white border rounded-lg p-6">
-                  <p className="mb-1.25">Clicks per Day</p>
+                <div className="bg-white border border-light-gray rounded-2xl p-6">
+                  <p className="mb-1.25">Daily Click Traffic</p>
                   <p className="text-[#6A7282] text-sm mb-5.25">Daily click traffic from affiliate links</p>
                   <ChartContainer config={clicksConfig} className="lg:max-h-64 xl:max-h-80 w-full">
                     <LineChart data={chartData}>
@@ -254,11 +286,11 @@ export default function PerformancePage() {
                 </div>
               </TabsContent>
               <TabsContent value="bookings-created">
-                <div className="bg-white border rounded-lg p-6">
-                  <p className="mb-1.25">Bookings Created per Day</p>
+                <div className="bg-white border border-light-gray rounded-2xl p-6">
+                  <p className="mb-1.25">Daily Bookings</p>
                   <p className="text-[#6A7282] text-sm mb-5.25">New bookings generated through your affiliate links</p>
                   <ChartContainer config={bookingsConfig} className="lg:max-h-64 xl:max-h-80 w-full">
-                    <LineChart data={bookingsData}>
+                    <BarChart data={bookingsData}>
                       <CartesianGrid vertical={false} stroke="var(--color-light-gray)" />
                       <XAxis
                         dataKey="date"
@@ -276,14 +308,8 @@ export default function PerformancePage() {
                         width={32}
                       />
                       <ChartTooltip content={<ChartTooltipContent />} />
-                      <Line
-                        type="monotone"
-                        dataKey="bookings"
-                        stroke="var(--color-bookings)"
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    </LineChart>
+                      <Bar dataKey="bookings" fill="var(--color-bookings)" radius={[3, 3, 0, 0]} />
+                    </BarChart>
                   </ChartContainer>
                 </div>
               </TabsContent>
@@ -292,184 +318,164 @@ export default function PerformancePage() {
         </Tabs>
       </section>
 
-      <section className="mt-6 sm:mt-12.25 mb-10">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <p className="text-lg font-medium">Commission Pipeline (Rental Date)</p>
-
-          {rentals && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="hidden sm:flex items-center gap-1.5 sm:ml-auto"
-              onClick={() => {
-                const rows = rentals.upcomingByPickupDate.map((u, i) => ({
-                  date: u.date,
-                  upcoming_rentals: u.value,
-                  completed_rentals: rentals.completedByDropoffDate[i]?.value ?? 0,
-                }));
-                downloadCsv(rows, "rentals-data.csv");
-              }}
-            >
-              <IconComponent icon="Download" className="size-4" />
-              Export CSV
-            </Button>
-          )}
-        </div>
-
-        <div className="hidden sm:block mb-6">
-          <p className="mb-1.25">Commission Pipeline (Rental Date)</p>
-          <p className="text-secondary">Upcoming + Completed Rentals</p>
-        </div>
-
-        {/* Desktop rental charts */}
-        <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 gap-x-6">
-          {isInitialLoad ? (
-            <>
-              <ChartSkeleton
-                title="Upcoming Rentals by Pickup Date"
-                subtitle="Scheduled rentals in your commission pipeline"
-              />
-              <ChartSkeleton
-                title="Completed Rentals by Dropoff Date"
-                subtitle="Completed rentals = commission earned"
-              />
-            </>
-          ) : upcomingRentalsData && completedRentalsData && upcomingAxis && completedAxis ? (
-            <>
-              <div className="bg-white border rounded-lg p-6">
-                <p className="mb-1.25">Upcoming Rentals by Pickup Date</p>
-                <p className="text-[#6A7282] text-sm mb-5.25">Scheduled rentals in your commission pipeline</p>
-                <ChartContainer config={upcomingRentalsConfig} className="lg:max-h-64 xl:max-h-80 w-full">
-                  <BarChart data={upcomingRentalsData}>
-                    <CartesianGrid vertical={false} stroke="var(--color-light-gray)" />
-                    <XAxis
-                      dataKey="date"
-                      tickLine={false}
-                      axisLine={false}
-                      tick={{ fill: "#999", fontSize: 11 }}
-                      padding={{ left: 0, right: 0 }}
-                    />
-                    <YAxis
-                      tickLine={false}
-                      axisLine={false}
-                      tick={{ fill: "#999", fontSize: 11 }}
-                      domain={upcomingAxis.domain}
-                      ticks={upcomingAxis.ticks}
-                      width={32}
-                    />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Bar dataKey="rentals" fill="var(--color-rentals)" radius={[3, 3, 0, 0]} />
-                  </BarChart>
-                </ChartContainer>
-              </div>
-              <div className="bg-white border rounded-lg p-6">
-                <p className="mb-1.25">Completed Rentals by Dropoff Date</p>
-                <p className="text-primary text-sm mb-5.25">Completed rentals = commission earned</p>
-                <ChartContainer config={completedRentalsConfig} className="lg:max-h-64 xl:max-h-80 w-full">
-                  <LineChart data={completedRentalsData}>
-                    <CartesianGrid vertical={false} stroke="var(--color-light-gray)" />
-                    <XAxis
-                      dataKey="date"
-                      tickLine={false}
-                      axisLine={false}
-                      tick={{ fill: "#999", fontSize: 11 }}
-                      padding={{ left: 0, right: 0 }}
-                    />
-                    <YAxis
-                      tickLine={false}
-                      axisLine={false}
-                      tick={{ fill: "#999", fontSize: 11 }}
-                      domain={completedAxis.domain}
-                      ticks={completedAxis.ticks}
-                      width={32}
-                    />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Line type="monotone" dataKey="rentals" stroke="var(--color-rentals)" strokeWidth={2} dot={false} />
-                  </LineChart>
-                </ChartContainer>
-              </div>
-            </>
-          ) : null}
-        </div>
-      </section>
-
-      {/* Mobile rental sections */}
-      <section className="sm:hidden mb-10">
-        <div className="bg-card border rounded-lg p-5">
-          <p className="text-lg font-medium text-foreground">Commission Pipeline (Rental Date)</p>
-          <p className="text-sm text-secondary">Upcoming + Completed Rentals</p>
-
-          {isInitialLoad ? (
-            <div className="animate-pulse mt-5 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-background rounded-lg p-4 h-16" />
-                <div className="bg-background rounded-lg p-4 h-16" />
-              </div>
-              <div className="h-40 bg-background rounded-lg" />
-            </div>
-          ) : rentals && upcomingRentalsData ? (
-            <>
-              <div className="grid grid-cols-2 gap-4 mt-5">
-                <div className="bg-background rounded-lg p-4">
-                  <p className="text-xs text-muted-foreground">Upcoming Rentals</p>
-                  <p className="text-2xl font-medium mt-1">
-                    {rentals.upcomingByPickupDate.reduce((sum, d) => sum + d.value, 0)}
-                  </p>
-                </div>
-                <div className="bg-background rounded-lg p-4">
-                  <p className="text-xs text-muted-foreground">Completed Rentals</p>
-                  <p className="text-2xl font-medium mt-1">
-                    {rentals.completedByDropoffDate.reduce((sum, d) => sum + d.value, 0)}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <p className="text-sm font-medium text-muted-foreground">Upcoming Rentals by Pickup Date</p>
-                <p className="text-xs text-muted-foreground mt-1">Scheduled rentals in your commission pipeline</p>
-
-                <div className="flex flex-col gap-2 mt-4">
-                  {upcomingRentalsData.map((row) => (
-                    <div key={row.date} className="flex items-center justify-between border-b border-border pb-3">
-                      <span className="text-sm text-foreground">{row.date}</span>
-                      <span className="bg-primary text-white text-sm font-medium rounded px-3 py-1">{row.rentals}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </>
-          ) : null}
-        </div>
-      </section>
-
-      <section className="sm:hidden mb-10">
-        <div className="bg-card border rounded-lg p-5">
-          <p className="text-sm font-medium text-muted-foreground">Completed Rentals by Dropoff Date</p>
-          <p className="text-xs text-secondary mt-1">Completed rentals = commission earned</p>
-
-          {isInitialLoad ? (
-            <div className="animate-pulse mt-4 h-40 bg-background rounded-lg" />
-          ) : completedRentalsData ? (
-            <div className="flex flex-col gap-2 mt-4">
-              {completedRentalsData.map((row) => (
-                <div key={row.date} className="flex items-center justify-between border-b border-border pb-3">
-                  <span className="text-sm text-foreground">{row.date}</span>
-                  <span className="text-sm font-medium text-secondary">{row.rentals}</span>
-                </div>
-              ))}
-            </div>
-          ) : null}
-        </div>
-      </section>
+      <SubIdPerformance rows={sampleSubIdRows} className="mt-6 sm:mt-10 mb-10" />
 
       <Banner level="info" message="Number of bookings and revenue may change due to cancellations." />
     </Fragment>
   );
 }
 
+function PerformanceStats({ data }: { data: DashboardSummary }) {
+  const cards: { label: string; value: string; change: number | undefined }[] = [
+    {
+      label: "Total Clicks",
+      value: data.totalClicks.value.toLocaleString(),
+      change: data.totalClicks.changePercent,
+    },
+    {
+      label: "Total Bookings",
+      value: data.totalBookings.value.toLocaleString(),
+      change: data.totalBookings.changePercent,
+    },
+    {
+      label: "Total Revenue",
+      value: formatPrice(data.totalRevenue.value),
+      change: data.totalRevenue.changePercent,
+    },
+    {
+      label: "Avg Conversion Rate",
+      value: `${data.totalClicks.conversionPercent.toFixed(2)}%`,
+      change: undefined,
+    },
+  ];
+
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mb-10">
+      {cards.map((card) => {
+        const pct = card.change ?? 0;
+        const positive = pct >= 0;
+        return (
+          <div key={card.label} className="bg-card border border-light-gray rounded-2xl p-6 flex flex-col gap-2">
+            <p className="text-sm text-[#6a7282]">{card.label}</p>
+            <p className="text-[32px] leading-[48px] font-medium">{card.value}</p>
+            <p className={cn("text-xs", positive ? "text-[#16a34a]" : "text-[#dc2626]")}>
+              {positive ? "+" : ""}
+              {pct.toFixed(1)}% vs last month
+            </p>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function SubIdPerformance({ rows, className }: { rows: SubIdRow[]; className?: string }) {
+  const [sortKey, setSortKey] = useState<SortKey>("revenue");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+
+  const handleSort = (key: SortKey) => {
+    if (key === sortKey) {
+      setSortDirection((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDirection(typeof rows[0]?.[key] === "number" ? "desc" : "asc");
+    }
+  };
+
+  const sortedRows = useMemo(() => {
+    const copy = [...rows];
+    copy.sort((a, b) => {
+      const av = a[sortKey];
+      const bv = b[sortKey];
+      if (typeof av === "number" && typeof bv === "number") {
+        return sortDirection === "asc" ? av - bv : bv - av;
+      }
+      return sortDirection === "asc"
+        ? String(av).localeCompare(String(bv))
+        : String(bv).localeCompare(String(av));
+    });
+    return copy;
+  }, [rows, sortKey, sortDirection]);
+
+  const columns: { key: SortKey; label: string; align: "left" | "right" }[] = [
+    { key: "subId", label: "Sub-ID", align: "left" },
+    { key: "source", label: "Source", align: "left" },
+    { key: "medium", label: "Medium", align: "left" },
+    { key: "campaign", label: "Campaign", align: "left" },
+    { key: "clicks", label: "Clicks", align: "right" },
+    { key: "bookings", label: "Bookings", align: "right" },
+    { key: "conversion", label: "Conversion", align: "right" },
+    { key: "revenue", label: "Revenue", align: "right" },
+  ];
+
+  return (
+    <section className={cn("bg-card border border-light-gray rounded-2xl p-6", className)}>
+      <div className="flex flex-col gap-1">
+        <h2 className="text-lg font-medium">Performance by Sub-ID</h2>
+        <p className="text-sm text-[#6a7282]">Track performance of different traffic sources using sub-ID tags</p>
+      </div>
+
+      <div className="mt-5 overflow-x-auto">
+        <table className="w-full min-w-max text-sm whitespace-nowrap">
+          <thead>
+            <tr className="border-b border-light-gray text-[#6a7282] font-medium">
+              {columns.map((col) => {
+                const isActive = sortKey === col.key;
+                const Arrow = isActive ? (sortDirection === "asc" ? ArrowUp : ArrowDown) : ArrowUpDown;
+                return (
+                  <th
+                    key={col.key}
+                    className={cn("py-2", col.align === "left" ? "text-left pr-4" : "text-right px-4")}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => handleSort(col.key)}
+                      className={cn(
+                        "inline-flex items-center gap-1 hover:text-foreground",
+                        col.align === "right" && "flex-row-reverse",
+                        isActive && "text-foreground",
+                      )}
+                    >
+                      {col.label}
+                      <Arrow className={cn("size-3.5", !isActive && "opacity-50")} />
+                    </button>
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {sortedRows.map((row) => (
+              <tr key={row.subId} className="border-b border-light-gray last:border-b-0">
+                <td className="py-4 pr-4 font-medium">{row.subId}</td>
+                <td className="py-4 pr-4">{row.source}</td>
+                <td className="py-4 pr-4">{row.medium}</td>
+                <td className="py-4 pr-4">{row.campaign}</td>
+                <td className="py-4 px-4 text-right">{row.clicks.toLocaleString()}</td>
+                <td className="py-4 px-4 text-right">{row.bookings.toLocaleString()}</td>
+                <td className="py-4 px-4 text-right">{row.conversion.toFixed(2)}%</td>
+                <td className="py-4 pl-4 text-right font-medium">{formatPrice(row.revenue)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="mt-5 rounded-lg bg-light-gray/20 px-4 py-4">
+        <p className="text-sm font-medium">💡 How to use Sub-ID tracking</p>
+        <p className="mt-2 text-xs text-[#6a7282]">
+          Add <code className="font-mono">?sub=your_tag</code> to your affiliate links to track different traffic
+          sources. For example: <code className="font-mono">www.bluecarrental.is/sfvero?sub=blog_post_1</code>. This
+          helps you identify which channels drive the best results so you can optimize your marketing efforts.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 function ChartSkeleton({ title, subtitle }: { title: string; subtitle: string }) {
   return (
-    <div className="bg-white border rounded-lg p-6">
+    <div className="bg-white border border-light-gray rounded-2xl p-6">
       <p className="mb-1.25">{title}</p>
       {subtitle && <p className="text-[#6A7282] text-sm mb-5.25">{subtitle}</p>}
       <div className="flex aspect-video lg:max-h-64 xl:max-h-80 w-full">

@@ -46,6 +46,8 @@ export interface PayoutRecord {
 
 export interface PayoutsData {
   availableBalance: number;
+  pendingAmount?: number;
+  confirmedMonths?: number;
   history: PayoutRecord[];
 }
 

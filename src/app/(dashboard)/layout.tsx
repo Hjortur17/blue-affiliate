@@ -29,13 +29,13 @@ export default function DashboardLayout({
   return (
     <AuthProvider>
       <AuthGuard>
-        <div className="p-4 sm:p-8">
+        <div className="mx-auto max-w-[1800px] p-4 sm:p-8">
           <Navbar />
 
           <div className="mt-10 flex gap-x-14">
             <Sidebar className="w-full max-w-88 hidden lg:block" />
 
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 min-w-0">{children}</main>
           </div>
         </div>
       </AuthGuard>

@@ -3,8 +3,10 @@ import { z } from "zod";
 export const StatCardSchema = z.object({
   label: z.string(),
   value: z.string(),
+  valueSuffix: z.string().optional(),
   subtext: z.string(),
   subtextColor: z.enum(["green", "red", "muted"]).optional(),
+  info: z.string().optional(),
 });
 
 export type StatCard = z.infer<typeof StatCardSchema>;
