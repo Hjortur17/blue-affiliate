@@ -9,7 +9,17 @@ export default function AuthLayout({
 }>) {
   return (
     <AuthProvider>
-      <div className="min-h-screen flex justify-center bg-background px-4 pt-[118px] pb-8">{children}</div>
+      <div
+        className="min-h-screen flex justify-center px-4 pt-[118px] pb-8"
+        style={{
+          backgroundImage: "url('/login-bg.svg'), linear-gradient(to bottom, #eef4ff 0%, #c3dcff 100%)",
+          backgroundSize: "cover, auto",
+          backgroundPosition: "center, center",
+          backgroundRepeat: "no-repeat, no-repeat",
+        }}
+      >
+        {children}
+      </div>
     </AuthProvider>
   );
 }

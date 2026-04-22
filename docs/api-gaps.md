@@ -24,6 +24,17 @@ Please add:
 
 Until this is available, the front end is showing the literal string `X%` as a placeholder.
 
+## Forgot password
+
+The login page now has a "Forgot password?" link that swaps the card to a reset-request form. There is no password-reset endpoint today — the submit handler fakes success (shows the "Check your email" view after a short delay) without sending anything.
+
+Please add:
+
+- `POST /v1/affiliate/auth/forgot-password` — accepts `{ email: string }` and, if an account exists for that email, sends a reset link. Return 200 regardless of whether the account exists (don't leak account existence).
+- A follow-up `POST /v1/affiliate/auth/reset-password` — accepts `{ token: string, newPassword: string }`. The reset link in the email will land on a page that calls this.
+
+Until these ship, the UI is stubbed and no email is actually sent. Look for the `TODO` in [src/app/(auth)/login/page.tsx](../src/app/(auth)/login/page.tsx).
+
 ## Notifications
 
 The notifications popover in the new navbar design shows a list of affiliate-facing notifications (payout approved, commission milestone reached, new marketing material, commission confirmed). There is no notifications endpoint today — the client is rendering hard-coded sample data.
