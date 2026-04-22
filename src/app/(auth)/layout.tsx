@@ -12,7 +12,7 @@ export default function AuthLayout({
       <div
         className="min-h-screen flex justify-center px-4 pt-[118px] pb-8"
         style={{
-          backgroundImage: "url('/login-bg.svg'), linear-gradient(to bottom, #eef4ff 0%, #c3dcff 100%)",
+          backgroundImage: "url('/login-bg.svg'), linear-gradient(to bottom, #c3dcff 0%, #eef4ff 100%)",
           backgroundSize: "cover, auto",
           backgroundPosition: "center, center",
           backgroundRepeat: "no-repeat, no-repeat",
